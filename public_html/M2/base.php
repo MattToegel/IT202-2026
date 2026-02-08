@@ -1,9 +1,9 @@
 <?php
 /* Don't edit this file directly. Instead, edit the problem files in the same directory. */
-function printArrayInfo($arr, $arrayNumber) {
+function printScenario1ArrayInfo($arr, $arrayNumber) {
  
-    echo "<div style='color: blue;display: block'>Problem {$arrayNumber}: 
-    <br>Original Array: 
+    echo "<div style='color: blue;display: block'>Array {$arrayNumber}: 
+    <br>Original Array:<br>
     <div style='display: inline-flex;align-items: baseline;'>";
     for($i = 0; $i < count($arr); $i++) {
         $a = $arr[$i];
@@ -15,7 +15,7 @@ function printArrayInfo($arr, $arrayNumber) {
 }
 function printHeader($ucid, $problem) {
     $currentDT = date("Y-m-d H:i:s");
-    echo "<h2 style='color: purple;'>Running Problem {$problem} for [{$ucid}] [{$currentDT}]</h2>";
+    echo "<h2 style='color: purple;'>Running Scenario {$problem} for [{$ucid}] [{$currentDT}]</h2>";
     switch ($problem) {
         case 1:
             echo "<p>Objective: Print out only odd values in a single line separated by commas</p>";
@@ -31,9 +31,9 @@ function printHeader($ucid, $problem) {
             echo "<ul>
                     <li>Challenge 1: Remove non-alphanumeric characters except spaces</li>
                     <li>Challenge 2: Convert text to Title Case</li>
-                    <li>Challenge 3: Trim leading/trailing spaces and remove duplicate spaces</li>
+                    <li>Challenge 3: Remove leading/trailing spaces and remove duplicate spaces between words</li>
                     <li>Result 1-3: Assign final phrase to placeholderForModifiedPhrase</li>
-                    <li>Challenge 4: Extract middle 3 characters (beginning starts at middle of phrase), assign to 'placeholderForMiddleCharacters'</li>
+                    <li>Challenge 4: Extract up to middle 3 characters (beginning starts at middle of phrase, exclude the first and last character for shorter phrases), assign to 'placeholderForMiddleCharacters'</li>
                     <li>If not enough characters, assign 'Not enough characters'</li>
                   </ul>";
             break;
@@ -41,14 +41,25 @@ function printHeader($ucid, $problem) {
             break;
     }
 }
+function printScenario2Output($total, $modifiedTotal) {
+    $str = (string)$total;
+    if (stripos($str, 'e') !== false) {
+        $totalFormatted = number_format($total, 20, '.', '');
+        $totalFormatted = rtrim(rtrim($totalFormatted, '0'), '.');
+    } else {
+        $totalFormatted = $total;
+    }
+    echo "<p>Total Raw Value: {$totalFormatted}</p>";
+    echo "<p>Total Modified Value: {$modifiedTotal}</p>";
+}
 function printFooter($ucid, $problem) {
     $currentDT = date("Y-m-d H:i:s");
-    echo "<h2 style='color: purple;'>Completed Problem {$problem} for [{$ucid}] [{$currentDT}]</h2>";
+    echo "<h2 style='color: purple;'>Completed Scenario {$problem} for [{$ucid}] [{$currentDT}]</h2>";
 }
-function printArrayInfoDouble($arr, $arrayNumber) {
-    echo "<p style='color: blue;'>Problem {$arrayNumber}: <br> Original Array: " . implode(", ", array_map(fn($num) => number_format($num, 8), $arr)) . "</p>";
+function printScenario2ArrayInfo($arr, $arrayNumber) {
+    echo "<p style='color: blue;'>Array {$arrayNumber}: <br> Original Array: <br>" . implode(", ", array_map(fn($num) => number_format($num, 8), $arr)) . "</p>";
 }
-function printArrayInfoMixed($arr, $arrayNumber) {
+function printScenario3ArrayInfo($arr, $arrayNumber) {
     
     $formattedArray = array_map(function($item) {
         $type = strtoupper(substr(gettype($item), 0, 1)); // Extract first character of type
@@ -56,21 +67,23 @@ function printArrayInfoMixed($arr, $arrayNumber) {
         return "$item [$type]";
     }, $arr);
 
-    echo "<p style='color: blue;'>Problem {$arrayNumber}: 
+    echo "<p style='color: blue;'>Array {$arrayNumber}: 
     <br> Note: The letter in the brackets indicates the data type of the value (I for integer, D for double/float, S for string).
-    <br> Original Array: " . implode(", ", $formattedArray) . "</p>";
+    <br> Original Array: <br>" . implode(", ", $formattedArray) . "</p>";
 }
-
-function printOutputWithType($arr) {
+function printScenario1Output($output_result){
+    echo "Output Array: <br>" . $output_result;
+}
+function printScenario3Output($arr) {
     $output = array_map(function($item) {
         if ($item === null) return "<span style='color: red;'>Invalid value</span>";
         $type = strtoupper(substr(gettype($item), 0, 1)); // Extract first character of type
         return "$item [$type]";
     }, $arr);
 
-    echo implode(", ", $output);
+    echo "<span>Output: </span><br>" . implode(", ", $output);
 }
-function printStringTransformations($index, $modifiedPhrase, $middleCharacters) {
+function printScenario4Transformations($index, $modifiedPhrase, $middleCharacters) {
     if (empty($modifiedPhrase)) {
         $modifiedPhrase = "<span style='color:red'>Missing</span>";
     }
@@ -80,14 +93,13 @@ function printStringTransformations($index, $modifiedPhrase, $middleCharacters) 
     // print Index [{$index}] = $modifiedPhrase, Middle: $middleCharacters, ensure extra spaces are not truncated if present
 
 
-    echo("<div style='display: inline-flex; align-items: baseline;'>Index[{$index}] \"<pre>{$modifiedPhrase}</pre>\" | Middle: \"<pre>{$middleCharacters}</pre>\"</div>");
+    echo("<div><div style='display: inline-flex; align-items: baseline;'>Index[{$index}] \"<pre>{$modifiedPhrase}</pre>\" | Middle: \"<pre>{$middleCharacters}</pre>\"</div></div>");
 }
-function printArrayInfoBasic($arr, $arrayNumber) {
-    echo "<div style='color: blue;display: display: block'>Problem {$arrayNumber}: 
+function printScenario4ArrayInfo($arr, $arrayNumber) {
+    echo "<div style='color: blue;display: block'>Array {$arrayNumber}: 
     <br>Note: The backticks are just to show all the characters in array slots.
     <br>Original Array: 
     <div style='display: inline-flex;align-items: baseline;'>";
-     //. implode(", ", array_map(fn($item) => "<code>[\"$item\"]</code>", $arr)) . "</p>";
     foreach($arr as $a){
         $comma = isset($comma) ? ", " : "";
         echo "$comma&nbsp;<pre><code>`$a`</code></pre>";
@@ -96,8 +108,6 @@ function printArrayInfoBasic($arr, $arrayNumber) {
     
 }
 
-?>
-<?php
 $currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 <script>
@@ -131,12 +141,68 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     nav ul li a:hover {
         background-color: #d0d0d0;
     }
+    .scenario1-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+        width: 100%;
+    }
+    .scenario2-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+        width: 100%;
+    }
+    .scenario3-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+        width: 100%;
+    }
+    .scenario4-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+        width: 100%;
+    }
+    @media (max-width: 768px) {
+        .scenario1-grid {
+            grid-template-columns: 1fr;
+        }
+        .scenario2-grid {
+            grid-template-columns: 1fr;
+        }
+        .scenario3-grid {
+            grid-template-columns: 1fr;
+        }
+        .scenario4-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    .problem-item {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+    .problem-item pre,
+    .problem-item code {
+        white-space: pre-wrap;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
 </style>
 <nav >
     <ul >
-        <li><a href="problem1.php">Problem 1</a></li>
-        <li><a href="problem2.php">Problem 2</a></li>
-        <li><a href="problem3.php">Problem 3</a></li>
-        <li><a href="problem4.php">Problem 4</a></li>
+        <li><a href="scenario1.php">Scenario 1</a></li>
+        <li><a href="scenario2.php">Scenario 2</a></li>
+        <li><a href="scenario3.php">Scenario 3</a></li>
+        <li><a href="scenario4.php">Scenario 4</a></li>
     </ul>
 </nav>
