@@ -1,42 +1,58 @@
 <?php
 
-$ini = @parse_ini_file(".env");
+$libEnvPath = __DIR__ . DIRECTORY_SEPARATOR . ".env";
+$ini = is_file($libEnvPath) ? parse_ini_file($libEnvPath) : false;
 
-if($ini && isset($ini["DB_URL"])){
-    //load local .env file
-    $url = $ini["DB_URL"];
-    $db_url = parse_url($url);
-}
-else{
-    //load from heroku env variables
-    $url = getenv("DB_URL");
-    $db_url = parse_url($url);
-    
-}
-//attempts to handle a failure where parse_url doesn't parse properly (usually happens when special characters are included)
-if (!$db_url || count($db_url) === 0) {
-    $matches;
-    $pattern = "/mysql:\/\/(\w+):(\w+)@([^:]+):(\d+)\/(\w+)/i";
-    preg_match($pattern, $url, $matches);
-    $db_url["host"] = $matches[3];
-    $db_url["user"] = $matches[1];
-    $db_url["pass"] = $matches[2];
-    $db_url["path"] = "/" . $matches[5];
-}
-if(!$db_url || count($db_url) === 0){
-    error_log("
-    Failed to load environment variables.
-    If this is localhost ensure the .env file is created, in the proper location, has content, and is saved.
-    If this is deployed ensure your platform's environment/config variables are set.
-        On Heroku that'd be under the VM/Dyno's Settings -> Reveal Config Vars
-    ");
+$url = "";
+$urlSource = "runtime environment";
 
-    throw new Exception("Config parsing error, check the logs for further details");
+if ($ini !== false && isset($ini["DB_URL"]) && trim((string) $ini["DB_URL"]) !== "") {
+    $url = trim((string) $ini["DB_URL"]);
+    $urlSource = ".env file";
+} else {
+    $envUrl = getenv("DB_URL");
+    if ($envUrl !== false && trim((string) $envUrl) !== "") {
+        $url = trim((string) $envUrl);
+    }
 }
-else{
-    $dbhost   = $db_url["host"];
-    $dbuser = $db_url["user"];
-    $dbpass = $db_url["pass"];
-    $dbdatabase       = substr($db_url["path"],1);
+
+if ($url === "") {
+    error_log("Failed to load DB_URL from .env or runtime environment");
+    throw new Exception("Config parsing error: DB_URL is missing");
 }
+
+$db_url = parse_url($url);
+
+// Fallback parser for edge cases where parse_url fails on provider-style URLs.
+if ((!is_array($db_url) || count($db_url) === 0) && preg_match("/^mysql:\/\/([^:\/@?#]+):([^@\/?#]+)@([^:\/?#]+):(\d+)\/([^\/?#]+)$/i", $url, $matches) === 1) {
+    $db_url = array(
+        "host" => $matches[3],
+        "user" => $matches[1],
+        "pass" => $matches[2],
+        "path" => "/" . $matches[5]
+    );
+}
+
+$requiredParts = array("host", "user", "pass", "path");
+$missingParts = array();
+
+if (!is_array($db_url) || count($db_url) === 0) {
+    $missingParts[] = "all";
+} else {
+    foreach ($requiredParts as $part) {
+        if (!isset($db_url[$part]) || $db_url[$part] === "") {
+            $missingParts[] = $part;
+        }
+    }
+}
+
+if (count($missingParts) > 0) {
+    error_log("Config parse failure from " . $urlSource . ". Missing DB_URL parts: " . implode(", ", $missingParts));
+    throw new Exception("Config parsing error, check logs for details");
+}
+
+$dbhost = $db_url["host"];
+$dbuser = urldecode($db_url["user"]);
+$dbpass = urldecode($db_url["pass"]);
+$dbdatabase = ltrim($db_url["path"], "/");
 ?>
