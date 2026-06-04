@@ -50,19 +50,19 @@
     <h1>IT202 Module 2 - PHP Scenarios</h1>
     <ul class="scenario-list">
         <li>
-            <a href="/M2/scenario1.php">Scenario 1: Odds</a>
+            <a href="/m02/hw/scenario1.php">Scenario 1: Odds</a>
             <div class="description">Print odd values from arrays</div>
         </li>
         <li>
-            <a href="/M2/scenario2.php">Scenario 2: Sum</a>
+            <a href="/m02/hw/scenario2.php">Scenario 2: Sum</a>
             <div class="description">Sum array values with two decimal formatting</div>
         </li>
         <li>
-            <a href="/M2/scenario3.php">Scenario 3: Conversion</a>
+            <a href="/m02/hw/scenario3.php">Scenario 3: Conversion</a>
             <div class="description">Make values positive and convert to original data types</div>
         </li>
         <li>
-            <a href="/M2/scenario4.php">Scenario 4: Strings</a>
+            <a href="/m02/hw/scenario4.php">Scenario 4: Strings</a>
             <div class="description">Transform text with cleaning, title case, and character extraction</div>
         </li>
     </ul>
