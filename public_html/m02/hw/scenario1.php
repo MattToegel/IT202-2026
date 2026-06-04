@@ -42,5 +42,9 @@ printOdds($array1, 1);
 printOdds($array2, 2);
 printOdds($array3, 3);
 printOdds($array4, 4);
+// external validation
+if(isset($_POST["array1"])){
+    printOdds($_POST["array1"], 5);
+}
 echo "</div>";
 printFooter($ucid, 1);

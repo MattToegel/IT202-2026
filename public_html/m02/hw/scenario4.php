@@ -52,6 +52,9 @@ transformText($array1, 1);
 transformText($array2, 2);
 transformText($array3, 3);
 transformText($array4, 4);
+if(isset($_POST["array1"])){
+    transformText($_POST["array1"], 5);
+}
 echo "</div>";
 printFooter($ucid, 4);
 

@@ -49,5 +49,8 @@ sumValues($array2, 2);
 sumValues($array3, 3);
 sumValues($array4, 4);
 sumValues($array5, 5);
+if(isset($_POST["array1"])){
+    sumValues($_POST["array1"], 6);
+}
 echo "</div>";
 printFooter($ucid, 2);

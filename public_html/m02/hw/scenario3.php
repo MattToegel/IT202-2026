@@ -44,5 +44,8 @@ bePositive($array2, 2);
 bePositive($array3, 3);
 bePositive($array4, 4);
 bePositive($array5, 5);
+if(isset($_POST["array1"])){
+    bePositive($_POST["array1"], 6);
+}
 echo "</div>";
 printFooter($ucid, 3);
