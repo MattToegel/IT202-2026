@@ -24,9 +24,11 @@ function transformText($arr, $arrayNumber) {
     // Challenge 2: Convert text to Title Case
     // Challenge 3: Remove leading/trailing spaces and remove duplicate spaces between words
     // Result 1-3: Assign final phrase to `placeholderForModifiedPhrase`
-    // Challenge 4 (extra credit): Extract up to middle 3 characters (beginning starts at middle of phrase, exclude the first and last character for shorter phrases, effectively middle index +/- 1)
+    // Challenge 4 (extra credit): Extract up to 3 of the middle characters from the cleaned phrase.
+    // Hint: The first and last characters should be excluded from the extracted "middle" characters.
+    // If the phrase is too short to have any middle characters, use "Not enough characters".
+    // Examples: "short" -> "hor", "even" -> "ve", "eve" -> "v", "a" -> "Not enough characters", "abcdef" -> "cde".
     // Assign result to 'placeholderForMiddleCharacters'
-    // If not enough characters in a word, instead assign "Not enough characters" to `placeholderForMiddleCharacters`
 
     $placeholderForModifiedPhrase = "";
     $placeholderForMiddleCharacters = "";

@@ -21,14 +21,16 @@ function bePositive($arr, $arrayNumber)
     //  Configure inline suggestions to "Disabled Inline Suggestions" (or similar) when writing code for this problem.
     
     // Challenge 1: Make each value positive
-    // Challenge 2: Convert the values back to their original data type and assign it to the proper slot in the `output` array
+    // Challenge 2: Keep or restore each value's original data type and assign it to the proper slot in the `output` array
+    // Note: You do not control the bracketed type labels in the output; base.php prints them so you can verify your data types.
+    // Example: a string like "-3.0" should become "3.0" and still show [S], not [D].
     // Step 1: sketch out plan using comments (include ucid and date)
     // Step 2: Add/commit your outline of comments (required for full credit)
     // Step 3: Add code to solve the problem (add/commit as needed)
 
     $output = array_fill(0, count($arr), null); // Initialize output array
     // Start Solution Edits
-    
+
 
     // End Solution Edits
     printScenario3Output($output);
