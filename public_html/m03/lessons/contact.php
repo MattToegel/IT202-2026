@@ -1,10 +1,10 @@
 <?php
 $submittedName = "";
 
-//if (isset($_POST["name"])) {
+if (isset($_POST["name"])) {
     // trim removes accidental spaces before display.
     $submittedName = trim($_POST["name"]);
-//}
+}
 ?>
 
 <form method="POST">
