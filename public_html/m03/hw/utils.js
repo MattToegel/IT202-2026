@@ -3,7 +3,7 @@
     "use strict";
 
     const VERSION = "2026.06.13-m03.1";
-    const EXPECTED_UTILS_HASH = "sha256:ef80bc30e09ba8bcabfe725b1ce0b4a24b9dcb92d3c73044f9caefa6f0c7c8a0";
+    const EXPECTED_UTILS_HASH = "sha256:8f9f47e385b30f1c172c7f455b98fc93b982d0ee7fa932241f818d849e931384";
     const HASH_LINE = 'const EXPECTED_UTILS_HASH = "__M03_UTILS_HASH__";';
     const loadedScript = document.currentScript;
 
@@ -191,14 +191,14 @@
         const checks = [];
         const url = scriptUrl();
         checks.push(check(
-            "tamper",
+            "integrity",
             "helper script is loaded from utils.js",
             0,
             /\/utils\.js(?:[?#].*)?$/.test(url),
             url
         ));
         checks.push(check(
-            "tamper",
+            "integrity",
             "expected utils.js hash is configured",
             0,
             /^sha256:[a-f0-9]{64}$/.test(EXPECTED_UTILS_HASH),
@@ -210,7 +210,7 @@
             const source = await response.text();
             const actualHash = await sha256(normalizeSourceForHash(source));
             checks.push(check(
-                "tamper",
+                "integrity",
                 "fetched utils.js hash matches instructor baseline",
                 0,
                 actualHash === null ? null : actualHash === EXPECTED_UTILS_HASH,
@@ -220,7 +220,7 @@
             ));
         } catch (error) {
             checks.push(check(
-                "tamper",
+                "integrity",
                 "fetched utils.js hash matches instructor baseline",
                 0,
                 null,
@@ -542,36 +542,71 @@
 
     async function run(challenge = challengeName()) {
         setupPage();
-        let checks = await tamperEvidence();
+        const integrityChecks = await tamperEvidence();
+        let challengeChecks = [];
+
         if (challenge === "challenge1") {
-            checks = checks.concat(challenge1Checks());
+            challengeChecks = challenge1Checks();
         } else if (challenge === "challenge2") {
-            checks = checks.concat(await challenge2Checks());
+            challengeChecks = await challenge2Checks();
         } else if (challenge === "challenge3") {
-            checks = checks.concat(await challenge3Checks());
+            challengeChecks = await challenge3Checks();
         } else {
-            checks.push(check("setup", "recognized challenge page", 0, false, document.body.className));
+            integrityChecks.push(check("consistency", "recognized challenge page", 0, false, document.body.className));
         }
+
+        const challengeSummary = summarize(challengeChecks);
+        const integritySummary = summarize(integrityChecks);
+
         return {
             assignment: "m03",
             challenge,
             version: VERSION,
             timestamp: new Date().toISOString(),
-            summary: summarize(checks),
-            checks,
+            summary: challengeSummary,
+            challengeSummary,
+            integritySummary,
+            checks: challengeChecks,
+            challengeChecks,
+            integrityChecks,
+            allChecks: integrityChecks.concat(challengeChecks),
+            groups: {
+                integrity: {
+                    label: "Integrity / Consistency",
+                    scored: false,
+                    summary: integritySummary,
+                    checks: integrityChecks,
+                },
+                challenge: {
+                    label: "Challenge Solution",
+                    scored: true,
+                    summary: challengeSummary,
+                    checks: challengeChecks,
+                },
+            },
         };
     }
 
     async function print(challenge) {
         const result = await run(challenge);
-        console.table(result.checks.map((item) => ({
+        const rowFor = (item) => ({
             status: item.status,
             category: item.category,
             name: item.name,
             points: `${item.earned}/${item.points}`,
             details: item.details,
-        })));
-        console.log("M03 grader summary:", result.summary);
+        });
+
+        console.group("M03 integrity / consistency checks (not scored)");
+        console.table(result.integrityChecks.map(rowFor));
+        console.log("M03 integrity summary:", result.integritySummary);
+        console.groupEnd();
+
+        console.group("M03 challenge solution checks (scored)");
+        console.table(result.challengeChecks.map(rowFor));
+        console.log("M03 challenge score:", result.challengeSummary);
+        console.groupEnd();
+
         return result;
     }
 
