@@ -2,18 +2,27 @@
 Challenge 2: Sidebar Layout with Collapsing Sidebars
 -----------------------------------------------------
 Requirements:
- Using CSS, adjust the layout per the following (don't override any of the CSS from styles.css)
- #1: Header is at the top
- #2: Content takes up the rest of the height
- #3: Both sidebars docked to the respective side and take up 15% width; 
- Content area should utilize the remaining width
+    Goal: edit the allowed style and script areas to solve the sidebar layout and toggle challenge.
 
- Using JavaScript complete the following
- #4: Attach the appropriate event listener to the buttons
- #5: Individually toggle the respective panel between collapsed and uncollapsed 
- (Don't lose the button in the process)
- #6: The content should adjust based on the status of the respective sidebars
- (i.e., take up more left, right, or both space)
+    Expected CSS behavior:
+    1. The header is positioned at the top.
+    2. The content region takes up the remaining height.
+    3. The left and right sidebars dock to their respective sides.
+    4. Each sidebar uses 15% width when open.
+    5. Each collapsed sidebar collapses completely while keeping its button usable.
+    6. The content area uses the remaining width.
+
+    Expected JavaScript behavior:
+    1. Each sidebar button has the appropriate event listener.
+    2. Each button toggles only its matching sidebar.
+    3. The toggle should not hide or lose access to the button.
+    4. The content area adjusts when the left sidebar, right sidebar, or both sidebars are collapsed.
+
+Workflow:
+    1. Update the visible UCID in the header tag.
+    2. Add UCID/date and planning comments before the solution code.
+    3. Commit the planning comments before committing the finished solution.
+    4. Test the HTML file locally before collecting evidence on qa.
 
 Notes:
  - Edit only your UCID, the style block, and the script block at the bottom of this file.
@@ -60,19 +69,30 @@ Notes:
                 <!-- Challenge Requirements -->
                 <h3>Requirements</h3>
                 <ul>
-                    <li>CSS Requirements:
+                    <li>Expected CSS behavior:
                         <ul>
-                            <li>Header is at the top</li>
-                            <li>Content takes up the rest of the height</li>
-                            <li>Both sidebars docked to the respective side and take up 15% width</li>
-                            <li>Content area should utilize the remaining width</li>
+                            <li>The header is positioned at the top.</li>
+                            <li>The content region takes up the remaining height.</li>
+                            <li>The left and right sidebars dock to their respective sides.</li>
+                            <li>Each sidebar uses 15% width when open.</li>
+                            <li>Each collapsed sidebar collapses completely while keeping its button usable.</li>
+                            <li>The content area uses the remaining width.</li>
                         </ul>
                     </li>
-                    <li>JavaScript Requirements:
+                    <li>Expected JavaScript behavior:
                         <ul>
-                            <li>Attach the appropriate event listener to the buttons</li>
-                            <li>Individually toggle the respective panel between collapsed and uncollapsed (don't lose the button in the process)</li>
-                            <li>The content should adjust based on the status of the respective sidebars (i.e., take up more left, right, or both space)</li>
+                            <li>Each sidebar button has the appropriate event listener.</li>
+                            <li>Each button toggles only its matching sidebar.</li>
+                            <li>The toggle should not hide or lose access to the button.</li>
+                            <li>The content area adjusts when the left sidebar, right sidebar, or both sidebars are collapsed.</li>
+                        </ul>
+                    </li>
+                    <li>Workflow:
+                        <ul>
+                            <li>Update the visible UCID in the header tag.</li>
+                            <li>Add UCID/date and planning comments before the solution code.</li>
+                            <li>Commit the planning comments before committing the finished solution.</li>
+                            <li>Test the HTML file locally before collecting evidence on qa.</li>
                         </ul>
                     </li>
                 </ul>
@@ -98,11 +118,17 @@ Notes:
     <script src="utils.js"></script>
 
     <script>
-        /* Solve the button logic here by finding and attaching an appropriate event listener and logic*/
+        /*
+            Add UCID/date and planning comments before your JavaScript solution.
+            Solve the sidebar toggle logic here by attaching appropriate event listeners.
+        */
     </script>
 
     <style>
-        /* You're free to make whatever edits you need here, just don't override anything in the styles.css */
+        /*
+            Add UCID/date and planning comments before your CSS solution.
+            Write Challenge 2 layout CSS here; do not override anything in styles.css.
+        */
     </style>
 </body>
 
