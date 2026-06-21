@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . "/../../lib/db.php");
+require_once(__DIR__ . "/../../lib/app.php");
 $errors = [];
 $email = "";
 
@@ -59,6 +59,7 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
 </head>
 
 <body>
+    <?php render_nav(); ?>
     <h1>Register</h1>
     <?php
     if (!empty($errors)) {
