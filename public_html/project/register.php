@@ -61,9 +61,11 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
 <body>
     <h1>Register</h1>
     <?php
-    echo "<pre>";
-    echo var_export($errors, true);
-    echo "</pre>";
+    if (!empty($errors)) {
+        echo "<pre>";
+        echo var_export($errors, true);
+        echo "</pre>";
+    }
     ?>
     <form method="post" action="register.php" onsubmit="return validate(this);">
         <p id="form-message"></p>
