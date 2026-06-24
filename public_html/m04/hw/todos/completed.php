@@ -20,7 +20,7 @@ try {
         $results = $stmt->fetchAll();
     }
 } catch (PDOException $e) {
-    echo "Error fetching pending todos; check the logs (terminal)";
+    echo "Error fetching completed todos; check the logs (terminal)";
     error_log("Select Error: " . var_export($e, true)); // shows in the terminal
 }
 ?>
@@ -47,7 +47,7 @@ try {
                         <?php foreach ($r as $key => $val): ?>
                             <?php if ($key == "days_offset"): ?>
                                 <?php if ($val >= 0): ?>
-                                    <td><?php echo "Completed $val day(s)"; ?></td>
+                                    <td><?php echo "Completed in $val day(s)"; ?></td>
                                 <?php else: ?>
                                     <td><?php echo "Overdue by " . abs($val) . " day(s)"; ?></td>
                                 <?php endif; ?>
