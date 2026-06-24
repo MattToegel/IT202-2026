@@ -4,7 +4,7 @@ function echo_url($dest)
     if (!str_ends_with($dest, ".php")) {
         $dest .= ".php";
     }
-    echo "/M4/todos/$dest";// If your folder name differs, update the path here
+    echo "/m04/hw/todos/$dest";
 }
 ?>
 <nav>

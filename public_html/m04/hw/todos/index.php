@@ -50,15 +50,15 @@
     <h1>IT202 Module 4 - Todos</h1>
     <ul class="scenario-list">
         <li>
-            <a href="/M4/todos/create.php">Create</a>
+            <a href="/m04/hw/todos/create.php">Create</a>
             <div class="description">Add a new todo item</div>
         </li>
         <li>
-            <a href="/M4/todos/pending.php">Pending</a>
+            <a href="/m04/hw/todos/pending.php">Pending</a>
             <div class="description">View and manage incomplete todo items</div>
         </li>
         <li>
-            <a href="/M4/todos/completed.php">Completed</a>
+            <a href="/m04/hw/todos/completed.php">Completed</a>
             <div class="description">View completed todo items</div>
         </li>
     </ul>

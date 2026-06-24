@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . "/../../../lib/db.php"); ?>
+require_once(__DIR__ . "/../../../../lib/db.php"); ?>
 
 <?php
 $db = getDB();
@@ -53,7 +53,7 @@ try {
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <td><?php echo $val; ?></td>
+                                <td><?php echo htmlspecialchars((string)$val, ENT_QUOTES, 'UTF-8'); ?></td>
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </tr>
