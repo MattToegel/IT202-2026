@@ -1,28 +1,30 @@
 <?php
-//for this we'll turn on error output so we can try to see any problems on the screen
-//this will be active for any script that includes/requires this one
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// Keep errors out of the page response and rely on logs/terminal output.
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 function getDB()
 {
-    global $db;
-    //this function returns an existing connection or creates a new one if needed
-    //and assigns it to the $db variable
-    if (!isset($db)) {
+    static $db = null;
+    // "static" means this variable keeps its value between function calls
+    // during the same request. So we create one DB connection and reuse it.
+    if ($db === null) {
         try {
-            //__DIR__ helps get the correct path regardless of where the file is being called from
-            //it gets the absolute path to this file, then we append the relative url (so up a directory and inside lib)
+            // __DIR__ is the folder where this file (db.php) lives.
+            // Using __DIR__ makes the path reliable no matter where PHP was called from.
             require_once(__DIR__ . "/config.php"); //pull in our credentials
-            //use the variables from config to populate our connection
+            // DSN (Data Source Name) tells PDO what DB to connect to.
+            // utf8mb4 supports full Unicode (including emoji and many symbols).
             $connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
-            //using the PDO connector create a new connect to the DB
-            //if no error occurs we're connected
-            $db = new PDO($connection_string, $dbuser, $dbpass);
-            //the default fetch mode is FETCH_BOTH which returns the data as both an indexed array and associative array
-            //we'll override the default here so it's always fetched as an associative array
-            $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        } catch (Exception $e) {
+            // Create the PDO connection.
+            // ERRMODE_EXCEPTION: DB problems throw exceptions we can catch.
+            // In PHP 8+, this is typically the default, but setting it explicitly is clearer.
+            // FETCH_ASSOC: query rows come back as column-name arrays.
+            $db = new PDO($connection_string, $dbuser, $dbpass, array(
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ));
+        } catch (Throwable $e) {
             error_log("getDB() error: " . var_export($e, true));
             $db = null;
             throw new Exception("Error connecting to database, see logs for further information");
