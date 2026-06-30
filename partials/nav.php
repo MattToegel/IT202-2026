@@ -1,16 +1,18 @@
 <?php
-// Temporary: a later lesson will move this check into shared auth utilities.
+// File: partials/nav.php
 $isLoggedIn = is_logged_in();
 ?>
 <link rel="stylesheet" href="/project/styles.css">
 <nav>
-  <a href="/project/index.php">Home</a>
-  <?php if ($isLoggedIn): ?>
-    <a href="/project/dashboard.php">Dashboard</a>
-    <a href="/project/logout.php">Logout</a>
-  <?php else: ?>
-    <a href="/project/login.php">Login</a>
-    <a href="/project/register.php">Register</a>
-  <?php endif; ?>
+    <ul>
+        <li><a href="/project/index.php">Home</a></li>
+        <?php if ($isLoggedIn): ?>
+            <li><a href="/project/dashboard.php">Dashboard</a></li>
+            <li><a href="/project/logout.php">Logout</a></li>
+        <?php else: ?>
+            <li><a href="/project/login.php">Login</a></li>
+            <li><a href="/project/register.php">Register</a></li>
+        <?php endif; ?>
+    </ul>
 </nav>
 <script src="/project/helpers.js"></script>
