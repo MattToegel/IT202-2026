@@ -1,7 +1,8 @@
 <?php
 // Temporary: a later lesson will move this check into shared auth utilities.
-$isLoggedIn = isset($_SESSION["user"]);
+$isLoggedIn = is_logged_in();
 ?>
+<link rel="stylesheet" href="/project/styles.css">
 <nav>
   <a href="/project/index.php">Home</a>
   <?php if ($isLoggedIn): ?>
@@ -12,3 +13,4 @@ $isLoggedIn = isset($_SESSION["user"]);
     <a href="/project/register.php">Register</a>
   <?php endif; ?>
 </nav>
+<script src="/project/helpers.js"></script>
