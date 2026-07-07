@@ -1,6 +1,11 @@
 ﻿<?php
-require_once(__DIR__ . "/base.php");
+// copilot: disable
+// @ts-nocheck
+require_once "base.php";
 
+$ucid = "YOUR_UCID_HERE"; // <-- set your UCID
+
+// Don't edit the arrays below, they are used to test your code.
 $a1_users = [
     ["userId" => 1, "name" => "Alice", "age" => 28],
     ["userId" => 2, "name" => "Bob", "age" => 34]
@@ -41,51 +46,38 @@ $a4_activities = [
     ["userId" => 8, "activity" => "Surfing"]
 ];
 
-function joinArrays($users, $activities) {
-    printProblemMultiData($users, $activities);
-    echo "<br>Joined output:<br>";
+function joinArrays($users, $activities, $arrayNumber) {
+    echo "<div class='problem-item'>";
+    printProblemMultiData($users, $activities, $arrayNumber);
 
+    // Only make edits between the designated "Start" and "End" comments.
     // Use the $users and $activities parameters. Do not directly read $a1-$a4 arrays inside this function.
-    // TODO: Add your UCID, date, and planning comments before writing the final solution.
-    // TODO Objective: Join both arrays on the userId property into one $joined array.
-    $joined = [];
-    // Start edits
+    // This should be solved without Copilot auto-completion.
+    // Configure inline suggestions to "Disabled Inline Suggestions" (or similar) when writing code for this problem.
 
-    // End edits
-    echo "<pre>" . var_export($joined, true) . "</pre>";
+    // Challenge: Join both arrays by matching the shared userId value into one $joined array.
+    // Step 1: sketch out a plan using comments (include UCID and date).
+    // Step 2: add/commit your outline of comments.
+    // Step 3: add code to solve the problem.
+
+    $joined = [];
+    // Start Solution Edits
+
+    // End Solution Edits
+    printProblemOutput("Joined output:", $joined);
+    echo "</div>";
 }
 
-$ucid = "YOUR_UCID_HERE";
 printHeader($ucid, 3);
+echo "<div class='problem-grid'>";
+joinArrays($a1_users, $a1_activities, 1);
+joinArrays($a2_users, $a2_activities, 2);
+joinArrays($a3_users, $a3_activities, 3);
+joinArrays($a4_users, $a4_activities, 4);
+// External validation can POST users and activities arrays to check that the function joins by userId instead of array position.
+if (isset($_POST["users"], $_POST["activities"])) {
+    joinArrays($_POST["users"], $_POST["activities"], 5);
+}
+echo "</div>";
+printFooter($ucid, 3);
 ?>
-<table>
-    <thead>
-        <tr>
-            <th>A1</th>
-            <th>A2</th>
-            <th>A3</th>
-            <th>A4</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><?php joinArrays($a1_users, $a1_activities); ?></td>
-            <td><?php joinArrays($a2_users, $a2_activities); ?></td>
-            <td><?php joinArrays($a3_users, $a3_activities); ?></td>
-            <td><?php joinArrays($a4_users, $a4_activities); ?></td>
-        </tr>
-    </tbody>
-</table>
-<?php printFooter($ucid, 3); ?>
-<style>
-    table {
-        border-spacing: 1em 3em;
-        border-collapse: separate;
-    }
-
-    td {
-        border-right: solid 1px black;
-        border-left: solid 1px black;
-        vertical-align: top;
-    }
-</style>

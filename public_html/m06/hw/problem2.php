@@ -1,6 +1,11 @@
 ﻿<?php
-require_once(__DIR__ . "/base.php");
+// copilot: disable
+// @ts-nocheck
+require_once "base.php";
 
+$ucid = "YOUR_UCID_HERE"; // <-- set your UCID
+
+// Don't edit the arrays below, they are used to test your code.
 $a1 = [
     ["id" => 1, "make" => "Toyota", "model" => "Camry", "year" => 2010],
     ["id" => 2, "make" => "Honda", "model" => "Civic", "year" => 2005]
@@ -21,53 +26,42 @@ $a4 = [
     ["id" => 8, "make" => "Audi", "model" => "A4", "year" => 1990]
 ];
 
-function processCars($cars) {
-    printProblemData($cars);
-    echo "<br>New Properties Output:<br>";
+function processCars($cars, $arrayNumber) {
+    echo "<div class='problem-item'>";
+    printProblemData($cars, $arrayNumber);
 
+    // Only make edits between the designated "Start" and "End" comments.
     // Use the $cars parameter. Do not directly read $a1, $a2, $a3, or $a4 inside this function.
-    // TODO: Add your UCID, date, and planning comments before writing the final solution.
-    // TODO Objective: Create $processedCars with the original properties plus age and isClassic.
+    // This should be solved without Copilot auto-completion.
+    // Configure inline suggestions to "Disabled Inline Suggestions" (or similar) when writing code for this problem.
+
+    // Challenge 1: create $processedCars with the original id, make, model, and year values.
+    // Challenge 2: add age based on the current year and each car's year.
+    // Challenge 3: add isClassic as a boolean based on $classic_age.
+    // Step 1: sketch out a plan using comments (include UCID and date).
+    // Step 2: add/commit your outline of comments.
+    // Step 3: add code to solve the problem.
+
     $currentYear = null;
     $processedCars = [];
     $classic_age = 25;
-    // Start edits
+    // Start Solution Edits
 
-    // End edits
-    echo "<pre>" . var_export($processedCars, true) . "</pre>";
+    // End Solution Edits
+    printProblemOutput("New properties output:", $processedCars);
+    echo "</div>";
 }
 
-$ucid = "YOUR_UCID_HERE";
 printHeader($ucid, 2);
+echo "<div class='problem-grid'>";
+processCars($a1, 1);
+processCars($a2, 2);
+processCars($a3, 3);
+processCars($a4, 4);
+// External validation can POST a cars array to check that the function is not hard-coded to the starter data.
+if (isset($_POST["cars"])) {
+    processCars($_POST["cars"], 5);
+}
+echo "</div>";
+printFooter($ucid, 2);
 ?>
-<table>
-    <thead>
-        <tr>
-            <th>A1</th>
-            <th>A2</th>
-            <th>A3</th>
-            <th>A4</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><?php processCars($a1); ?></td>
-            <td><?php processCars($a2); ?></td>
-            <td><?php processCars($a3); ?></td>
-            <td><?php processCars($a4); ?></td>
-        </tr>
-    </tbody>
-</table>
-<?php printFooter($ucid, 2); ?>
-<style>
-    table {
-        border-spacing: 1em 3em;
-        border-collapse: separate;
-    }
-
-    td {
-        border-right: solid 1px black;
-        border-left: solid 1px black;
-        vertical-align: top;
-    }
-</style>
