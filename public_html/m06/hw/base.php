@@ -3,13 +3,14 @@
 
 function printHeader($ucid, $problem) {
     $currentDT = date("Y-m-d H:i:s");
+    echo "<p><a class='home-button' href='index.php'>Back to Module 6 Homework</a></p>";
     echo "<h2 style='color: purple;'>Running Problem {$problem} for [{$ucid}] [{$currentDT}]</h2>";
     switch ($problem) {
         case 1:
             echo '<p>Objective: Extract name, color, and region into a separate multi-dimensional array called $subset.</p>';
             break;
         case 2:
-            echo '<p>Objective: Create $processedCars with the original properties plus age and isClassic.</p>';
+            echo '<p>Objective: Create $processedCars with the original properties plus age and isClassic. isClassic is a boolean based on today\'s year and the $classic_age value.</p>';
             break;
         case 3:
             echo '<p>Objective: Join the user and activity arrays on the userId property into one $joined array.</p>';
@@ -23,6 +24,7 @@ function printFooter($ucid, $problem) {
     $currentDT = date("Y-m-d H:i:s");
     echo "<h2 style='color: purple;'>Completed Problem {$problem} for [{$ucid}] [{$currentDT}]</h2>";
 }
+
 
 function printProblemData($arr, $arrayNumber) {
     echo "<p style='color: blue;'>Data Set {$arrayNumber}: Original Array</p>";
@@ -56,6 +58,19 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     body {
         font-family: Arial, sans-serif;
         margin: 20px;
+    }
+    .home-button {
+        display: inline-block;
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        background-color: #e0e0e0;
+        border: 1px solid #c0c0c0;
+        border-radius: 3px;
+        color: black;
+        text-decoration: none;
+    }
+    .home-button:hover {
+        background-color: #d0d0d0;
     }
     nav ul {
         display: flex;
@@ -112,3 +127,4 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <li><a href="problem3.php">Problem 3</a></li>
     </ul>
 </nav>
+

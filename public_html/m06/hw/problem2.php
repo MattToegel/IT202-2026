@@ -37,7 +37,7 @@ function processCars($cars, $arrayNumber) {
 
     // Challenge 1: create $processedCars with the original id, make, model, and year values.
     // Challenge 2: add age based on the current year and each car's year.
-    // Challenge 3: add isClassic as a boolean based on $classic_age.
+    // Challenge 3: add isClassic as a boolean based on today's year and the $classic_age value.
     // Step 1: sketch out a plan using comments (include UCID and date).
     // Step 2: add/commit your outline of comments.
     // Step 3: add code to solve the problem.
@@ -65,3 +65,4 @@ if (isset($_POST["cars"])) {
 echo "</div>";
 printFooter($ucid, 2);
 ?>
+
