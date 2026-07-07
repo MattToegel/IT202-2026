@@ -1,7 +1,7 @@
-﻿<?php
+<?php
 // copilot: disable
 // @ts-nocheck
-require_once "base.php";
+require_once(__DIR__ . "/base.php");
 
 $ucid = "YOUR_UCID_HERE"; // <-- set your UCID
 
@@ -65,4 +65,3 @@ if (isset($_POST["cars"])) {
 echo "</div>";
 printFooter($ucid, 2);
 ?>
-

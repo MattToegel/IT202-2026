@@ -1,9 +1,8 @@
-﻿<?php
+<?php
 /* Don't edit this file directly. Instead, edit the problem files in the same directory. */
 
 function printHeader($ucid, $problem) {
     $currentDT = date("Y-m-d H:i:s");
-    echo "<p><a class='home-button' href='index.php'>Back to Module 6 Homework</a></p>";
     echo "<h2 style='color: purple;'>Running Problem {$problem} for [{$ucid}] [{$currentDT}]</h2>";
     switch ($problem) {
         case 1:
@@ -58,19 +57,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     body {
         font-family: Arial, sans-serif;
         margin: 20px;
-    }
-    .home-button {
-        display: inline-block;
-        margin-bottom: 10px;
-        padding: 8px 12px;
-        background-color: #e0e0e0;
-        border: 1px solid #c0c0c0;
-        border-radius: 3px;
-        color: black;
-        text-decoration: none;
-    }
-    .home-button:hover {
-        background-color: #d0d0d0;
     }
     nav ul {
         display: flex;
@@ -127,4 +113,3 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <li><a href="problem3.php">Problem 3</a></li>
     </ul>
 </nav>
-
