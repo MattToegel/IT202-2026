@@ -6,7 +6,7 @@ require_role("Admin");
 $stocks = [];
 
 try {
-    $db = getDB();
+    /*$db = getDB();
     $stmt = $db->prepare(
         "SELECT id, symbol, price, latest_trading_day, is_api
          FROM Stocks
@@ -14,7 +14,13 @@ try {
          LIMIT 10"
     );
     $stmt->execute();
-    $stocks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stocks = $stmt->fetchAll(PDO::FETCH_ASSOC);*/
+    $stocks = selectAll(
+        "SELECT id, symbol, price, latest_trading_day, is_api
+         FROM Stocks
+         ORDER BY modified DESC
+         LIMIT 10"
+    );
 } catch (PDOException $e) {
     error_log("List stocks failed: " . $e->getMessage());
     flash("Unable to load stocks.", "danger");

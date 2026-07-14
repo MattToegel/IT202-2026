@@ -6,7 +6,7 @@ require_role("Admin");
 $companies = [];
 
 try {
-    $db = getDB();
+    /*$db = getDB();
     $stmt = $db->prepare(
         "SELECT id, symbol, name, type, region, is_api
          FROM Companies
@@ -14,7 +14,13 @@ try {
          LIMIT 10"
     );
     $stmt->execute();
-    $companies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $companies = $stmt->fetchAll(PDO::FETCH_ASSOC);*/
+    $companies = selectAll(
+        "SELECT id, symbol, name, type, region, is_api
+         FROM Companies
+         ORDER BY modified DESC
+         LIMIT 10"
+    );
 } catch (PDOException $e) {
     error_log("List companies failed: " . $e->getMessage());
     flash("Unable to load companies.", "danger");
