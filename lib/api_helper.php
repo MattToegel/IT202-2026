@@ -111,11 +111,11 @@ function api_post(string $url, array $data = [], array $options = []): array
  * Decodes a successful API result and appends user-friendly errors when it is unusable.
  *
  * @param array $result Result returned by api_get(), api_post(), or api_sample_response().
- * @param string $expected_json_key JSON key the calling page needs to inspect.
+ * @param string|null $expected_json_key JSON key to inspect, or null to use the root array.
  * @param array $errors Shared validation-style error list.
  * @return array|null Decoded response array, or null when validation fails.
  */
-function decode_api_response(array $result, string $expected_json_key, array &$errors): ?array
+function decode_api_response(array $result, ?string $expected_json_key, array &$errors): ?array
 {
     if (!$result["ok"]) {
         $errors[] = $result["status"] === 0
@@ -139,7 +139,11 @@ function decode_api_response(array $result, string $expected_json_key, array &$e
         return null;
     }
 
-    if (!isset($decoded[$expected_json_key]) || !is_array($decoded[$expected_json_key])) {
+    if (
+        $expected_json_key !== null &&
+        (!isset($decoded[$expected_json_key]) ||
+            !is_array($decoded[$expected_json_key]))
+    ) {
         $errors[] = "The API response did not contain the expected data.";
         error_log("API response is missing expected JSON key: " . $expected_json_key);
         return null;
@@ -168,4 +172,3 @@ function api_sample_response(string $file_name): array
 
     return ["ok" => true, "status" => 200, "error" => "", "body" => $body];
 }
-
