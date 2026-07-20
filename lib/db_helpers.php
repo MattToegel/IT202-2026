@@ -181,9 +181,11 @@ function update(string $table_name, array $data, array $where_keys = ["id"], arr
 
     // same patch as the insert to fix "columns" prefixed with ":"
     foreach ($data as $key => $value) {
-        $new_key = str_replace(":","",$key);
-        $data[$new_key] = $value;
-        unset($data[$key]);
+        if (str_contains(":", $key)) {
+            $new_key = str_replace(":", "", $key);
+            $data[$new_key] = $value;
+            unset($data[$key]);
+        }
     }
 
     if (!$where_keys || !array_is_list($where_keys)) {
