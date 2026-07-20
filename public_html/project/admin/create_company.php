@@ -195,6 +195,7 @@ flash_errors($errors);
         </section>
     </main>
     <?php render_flash_messages(); ?>
+<?php render_scripts(); ?>
     <script>
         const companyFormButtons = document.querySelectorAll("[data-form-mode-button]");
         const companyFormPanels = document.querySelectorAll("[data-form-mode-panel]");
