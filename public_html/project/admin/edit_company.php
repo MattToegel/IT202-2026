@@ -107,5 +107,6 @@ if (!$company) {
         </form>
     </main>
     <?php render_flash_messages(); ?>
+<?php render_scripts(); ?>
 </body>
 </html>
