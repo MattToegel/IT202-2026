@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jQuery Click Counter</title>
+</head>
+<body>
+  <h1>Click Counter</h1>
+  <button id="count-click" type="button">Count Click</button>
+  <p>Clicks: <span id="click-count">0</span></p>
+
+  <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+  <script>
+    $(function () {
+      let clickCount = 0;
+
+      $("#count-click").on("click", function () {
+        clickCount += 1;
+        $("#click-count").text(clickCount);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+<script>
+$(function () {
+  const marketUrl = new URL("https://api.coingecko.com/api/v3/coins/markets");
+  marketUrl.search = new URLSearchParams({
+    vs_currency: "usd",
+    ids: "bitcoin,ethereum,litecoin",
+    order: "market_cap_desc",
+    per_page: "3",
+    page: "1",
+    sparkline: "false",
+  });
+
+  const money = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+  });
+
+  function formatMoney(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) {
+      return "Unavailable";
+    }
+
+    return money.format(number);
+  }
+
+  const $rows = $("<tbody>");
+  const $status = $("<p>").text("Ready to load market data.");
+  const $refresh = $("<button>").attr("type", "button").text("Refresh");
+  const $table = $("<table>").append(
+    $("<thead>").append(
+      $("<tr>").append(
+        $("<th>").text("Coin"),
+        $("<th>").text("Current Price"),
+        $("<th>").text("24h Change")
+      )
+    ),
+    $rows
+  );
+
+  $(document.body).append(
+    $("<h1>").text("CoinGecko Market Data"),
+    $("<p>").text("Bitcoin, Ethereum, and Litecoin in USD"),
+    $refresh,
+    $status,
+    $table
+  );
+
+  function loadMarkets() {
+    if ($refresh.prop("disabled")) {
+      return;
+    }
+
+    $refresh.prop("disabled", true);
+    $status.text("Loading market data...");
+
+    $.get(marketUrl.toString())
+      .done(function (markets) {
+        if (!Array.isArray(markets)) {
+          $status.text("CoinGecko returned an unexpected response.");
+          return;
+        }
+
+        $rows.empty();
+        for (const coin of markets) {
+          const change = Number(coin.price_change_percentage_24h);
+          let changeText = "Unavailable";
+          if (Number.isFinite(change)) {
+            changeText = `${change.toFixed(2)}%`;
+          }
+
+          const $change = $("<td>").text(changeText);
+          if (Number.isFinite(change)) {
+            if (change >= 0) {
+              $change.css("color", "green");
+            } else {
+              $change.css("color", "crimson");
+            }
+          }
+
+          $rows.append(
+            $("<tr>").append(
+              $("<td>").text(`${coin.name} (${coin.symbol.toUpperCase()})`),
+              $("<td>").text(formatMoney(coin.current_price)),
+              $change
+            )
+          );
+        }
+
+        $status.text(`Updated ${markets.length} market records.`);
+      })
+      .fail(function () {
+        $status.text("Market data is unavailable. Try again shortly.");
+      })
+      .always(function () {
+        $refresh.prop("disabled", false);
+      });
+  }
+
+  $refresh.on("click", loadMarkets);
+  loadMarkets();
+  setInterval(loadMarkets, 5 * 60 * 1000);
+});
+</script>
