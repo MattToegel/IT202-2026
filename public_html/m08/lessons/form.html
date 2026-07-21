@@ -1,0 +1,20 @@
+<script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+<label for="name">Name</label>
+<input id="name" type="text">
+<button id="greet" type="button">Greet</button>
+<p id="greeting"></p>
+
+<script>
+    $(function () {
+        $("#greet").on("click", function () {
+            const name = $("#name").val().trim();
+
+            if (name === "") {
+                $("#greeting").text("Enter a name first.");
+                return;
+            }
+
+            $("#greeting").text("Hello, " + name + "!");
+        });
+    });
+</script>
