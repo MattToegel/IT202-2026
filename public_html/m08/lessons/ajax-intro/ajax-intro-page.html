@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AJAX Request Comparison</title>
+</head>
+
+<body>
+    <h1>AJAX Request Comparison</h1>
+
+    <label for="message">Message</label>
+    <input id="message" name="message" value="Hello AJAX">
+
+    <button id="send-xhr" type="button">Send with XMLHttpRequest</button>
+    <button id="send-fetch" type="button">Send with Fetch</button>
+    <button id="send-fetch-promise" type="button">Send with Fetch Promise</button>
+    <button id="send-jquery" type="button">Send with jQuery</button>
+
+    <p id="status"></p>
+
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+    <script>
+        const endpoint = "ajax-intro-endpoint.php";
+        const messageInput = document.querySelector("#message");
+        const status = document.querySelector("#status");
+
+        function getMessage() {
+            return messageInput.value;
+        }
+
+        function showStatus(message) {
+            status.textContent = message;
+        }
+
+        function showJsonResponse(responseText, responseStatus) {
+            try {
+                const data = JSON.parse(responseText);
+                showStatus(data.message);
+
+                if (responseStatus >= 200 && responseStatus < 300 && data.ok) {
+                    messageInput.value = "";
+                }
+            } catch (error) {
+                showStatus("The endpoint did not return valid JSON.");
+            }
+        }
+
+        document.querySelector("#send-xhr").addEventListener("click", function () {
+            const message = getMessage();
+
+            const request = new XMLHttpRequest();
+            request.addEventListener("load", function () {
+                showJsonResponse(request.responseText, request.status);
+            });
+            request.addEventListener("error", function () {
+                showStatus("The XMLHttpRequest request could not be completed.");
+            });
+
+            request.open("POST", endpoint);
+            request.setRequestHeader(
+                "Content-Type",
+                "application/x-www-form-urlencoded"
+            );
+            request.send(new URLSearchParams({ message: message }).toString());
+        });
+
+        document.querySelector("#send-fetch").addEventListener("click", async function () {
+            const message = getMessage();
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    body: new URLSearchParams({ message: message }),
+                });
+                const data = await response.json();
+
+                if (!response.ok || !data.ok) {
+                    throw new Error(data.message || "The Fetch request failed.");
+                }
+
+                showStatus(data.message);
+                messageInput.value = "";
+            } catch (error) {
+                showStatus(error.message);
+            }
+        });
+        document.querySelector("#send-fetch-promise").addEventListener("click", function () {
+            const message = getMessage();
+
+            try {
+                const response = fetch(endpoint, {
+                    method: "POST",
+                    body: new URLSearchParams({ message: message }),
+                })
+                    .then(resp => resp.json())
+                    .then(json => {
+                        const data = json;
+                        console.log(data);
+                        if (!data.ok) {
+                            throw new Error(data.message || "The Fetch request failed.");
+                        }
+                        showStatus(data.message);
+
+                    });
+
+
+
+                messageInput.value = "";
+            } catch (error) {
+                showStatus(error.message);
+            }
+        });
+
+
+        $("#send-jquery").on("click", function () {
+            const message = getMessage();
+
+            $.post(endpoint, { message: message })
+                .done(function (data) {
+                    showStatus(data.message);
+
+                    if (data.ok) {
+                        messageInput.value = "";
+                    }
+                })
+                .fail(function (request) {
+                    let errorMessage = "The jQuery request could not be completed.";
+
+                    if (request.responseJSON && request.responseJSON.message) {
+                        errorMessage = request.responseJSON.message;
+                    }
+
+                    showStatus(errorMessage);
+                });
+        });
+    </script>
+</body>
+
+</html>
