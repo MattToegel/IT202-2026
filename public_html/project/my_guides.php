@@ -1,23 +1,33 @@
 <?php
-// public_html/project/guides.php
+// public_html/project/my_guides.php
 require_once(__DIR__ . "/../../lib/app.php");
 
+if (!is_logged_in()) {
+    flash("Log in to view your saved guides.", "warning");
+    header("Location: " . project_url("login.php"));
+    exit;
+}
+
 $sort_options = [
-    "modified" => "Recently Updated",
+    "modified" => "Date Saved",
     "title" => "Title",
     "primary_category" => "Category",
     "game" => "Game",
     "player_race" => "Player Race",
     "opponent_race" => "Opponent Race",
 ];
-
-$allowed_sort_columns = array_keys($sort_options);
+$sort_column_map = [
+    "modified" => "ug.modified",
+    "title" => "g.title",
+    "primary_category" => "g.primary_category",
+    "game" => "g.game",
+    "player_race" => "g.player_race",
+    "opponent_race" => "g.opponent_race",
+];
 $list_config = [
     "filters" => guide_filter_rules(),
-    // Each submitted sort key matches its trusted SQL column on these pages.
-    "sort_columns" => $allowed_sort_columns,
+    "sort_columns" => $sort_column_map,
 ];
-
 $list_state = build_list_query_state($_GET, $list_config);
 $filters = $list_state["filters"];
 $sort = $list_state["sort"];
@@ -25,21 +35,24 @@ $direction = $list_state["direction"];
 $order_by = $list_state["order_by"];
 $limit = $list_state["limit"];
 
-$filter_query = build_guide_filter_query($filters);
-$where = "";
+$column_prefix = "g."; // for table names or aliases
+$filter_query = build_guide_filter_query($filters, $column_prefix);
+$where = "WHERE ug.user_id = :user_id AND ug.is_active = 1";
 if (!empty($filter_query["sql"])) {
-    $where = "WHERE " . $filter_query["sql"];
+    $where .= " AND " . $filter_query["sql"];
 }
-$params = $filter_query["params"];
+$params = array_merge(
+    ["user_id" => get_user_id()],
+    $filter_query["params"]
+);
 
 $matching_count = 0;
 $guides = [];
-
 try {
-    // The count uses the same filters but no ORDER BY or LIMIT.
     $count_row = select(
         "SELECT COUNT(*) AS total
-         FROM Guides
+         FROM UserGuides ug
+         JOIN Guides g ON g.id = ug.guide_id
          $where
          LIMIT 1",
         $params
@@ -47,53 +60,44 @@ try {
     $matching_count = (int) ($count_row["total"] ?? 0);
 
     $guides = selectAll(
-        "SELECT id, title, excerpt, game, primary_category, status,
-                summary, source_author, source_url, video,
-                player_race, opponent_race, matchup,
-                IF(api_id IS NULL, 'Manual', 'API') AS source
-         FROM Guides
+        "SELECT g.id, g.title, g.excerpt, g.game, g.primary_category,
+                g.status, g.summary, g.source_author, g.source_url, g.video,
+                g.player_race, g.opponent_race, g.matchup,
+                IF(g.api_id IS NULL, 'Manual', 'API') AS source,
+                1 AS is_saved,
+                ug.modified AS saved_on
+         FROM UserGuides ug
+         JOIN Guides g ON g.id = ug.guide_id
          $where
-         ORDER BY $order_by, id ASC
+         ORDER BY $order_by, g.id ASC
          LIMIT $limit",
         $params
     );
 } catch (Throwable $e) {
-    error_log("Guide list failed: " . $e->getMessage());
-    flash("Guides could not be loaded.", "danger");
+    error_log("Saved guide list failed: " . $e->getMessage());
+    flash("Saved guides could not be loaded.", "danger");
 }
-$user_id = get_user_id(); // returns 0 when not logged in
-$list_params = array_merge($params, ["user_id" => $user_id]);
-
-$guides = selectAll(
-    "SELECT g.id, g.title, g.excerpt, g.game, g.primary_category,
-            g.status, g.summary, g.source_author, g.source_url, g.video,
-            g.player_race, g.opponent_race, g.matchup,
-            IF(g.api_id IS NULL, 'Manual', 'API') AS source,
-            EXISTS (
-                SELECT 1
-                FROM UserGuides ug
-                WHERE ug.guide_id = g.id
-                  AND ug.user_id = :user_id
-                  AND ug.is_active = 1
-            ) AS is_saved
-     FROM Guides g
-     $where
-     ORDER BY $order_by, g.id ASC
-     LIMIT $limit",
-    $list_params
-);
 $shown_count = count($guides);
-
 ?>
 <!doctype html>
 <html lang="en">
-
-<head><?php render_head("StarCraft Guides"); ?></head>
-
+<head><?php render_head("My Saved Guides"); ?></head>
 <body>
     <?php render_nav(); ?>
     <main class="container py-4">
-        <h1>StarCraft Guides</h1>
+        <div class="d-flex flex-wrap justify-content-between gap-2 align-items-center">
+            <h1>My Saved Guides</h1>
+            <?php if ($matching_count > 0): ?>
+                <form method="post"
+                    action="<?php echo project_url("internal/clear_saved_guides.php"); ?>">
+                    <?php render_button([
+                        "text" => "Remove All Saved Guides",
+                        "variant" => "danger",
+                    ]); ?>
+                </form>
+            <?php endif; ?>
+        </div>
+
         <?php render_guide_search(
             $filters,
             $limit,
@@ -101,12 +105,19 @@ $shown_count = count($guides);
             $direction,
             $sort_options
         ); ?>
+        <?php render_result_summary($shown_count, $matching_count); ?>
         <?php
-        render_result_summary($shown_count, $matching_count);
-        render_grid($guides); ?>
+        $card_options = [
+            "show_saved_on" => true,
+        ];
+        render_grid(
+            $guides,
+            $card_options,
+            "No saved guides matched the selected filters."
+        );
+        ?>
     </main>
     <?php render_flash_messages(); ?>
     <?php render_scripts(); ?>
 </body>
-
 </html>

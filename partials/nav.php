@@ -28,6 +28,11 @@ $isLoggedIn = is_logged_in();
                 <?php if ($isLoggedIn): ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo project_url("dashboard.php"); ?>">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo project_url("profile.php"); ?>">Profile</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo project_url("my_guides.php"); ?>">
+                            My Saved Guides
+                        </a>
+                    </li>
                     <?php if (has_role("Admin")): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button"
