@@ -25,6 +25,10 @@ $direction = $list_state["direction"];
 $order_by = $list_state["order_by"];
 $limit = $list_state["limit"];
 
+$pagination_state = build_pagination_query_state($_GET, $limit);
+$page = $pagination_state["page"];
+$offset = $pagination_state["offset"];
+
 $filter_query = build_guide_filter_query($filters);
 $where = "";
 if (!empty($filter_query["sql"])) {
@@ -33,6 +37,7 @@ if (!empty($filter_query["sql"])) {
 $params = $filter_query["params"];
 
 $matching_count = 0;
+$total_pages = 1;
 $guides = [];
 
 try {
@@ -45,9 +50,20 @@ try {
         $params
     );
     $matching_count = (int) ($count_row["total"] ?? 0);
+    $total_pages = pagination_total_pages($matching_count, $limit);
 
+    // A removal may leave the requested page beyond the new final page.
+    if ($page > $total_pages) {
+        $page = $total_pages;
+        $offset = pagination_offset($page, $limit);
+    }
+
+    $list_params = array_merge($params, [
+        "limit" => $limit,
+        "offset" => $offset,
+    ]);
     $user_id = get_user_id(); // returns 0 when not logged in
-    $list_params = array_merge($params, ["user_id" => $user_id]);
+    $list_params = array_merge($list_params, ["user_id" => $user_id]);
 
     $guides = selectAll(
         "SELECT g.id, g.title, g.excerpt, g.game, g.primary_category,
@@ -64,7 +80,7 @@ try {
      FROM Guides g
      $where
      ORDER BY $order_by, g.id ASC
-     LIMIT $limit",
+     LIMIT :limit OFFSET :offset",
         $list_params
     );
 } catch (Throwable $e) {
@@ -93,7 +109,18 @@ $shown_count = count($guides);
         ); ?>
         <?php
         render_result_summary($shown_count, $matching_count);
-        render_grid($guides); ?>
+        render_grid($guides);
+        $query_params = array_merge($filters, [
+            "sort" => $sort,
+            "direction" => $direction,
+            "limit" => $limit,
+        ]);
+        render_pagination(
+            $page,
+            $total_pages,
+            $query_params
+        );
+        ?>
     </main>
     <?php render_flash_messages(); ?>
     <?php render_scripts(); ?>

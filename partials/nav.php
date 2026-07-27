@@ -49,6 +49,18 @@ $isLoggedIn = is_logged_in();
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="<?php echo project_url("admin/create_guide.php"); ?>">Create Guide</a></li>
                                 <li><a class="dropdown-item" href="<?php echo project_url("admin/list_guides.php"); ?>">List Guides</a></li>
+                                <li>
+                                    <a class="dropdown-item"
+                                        href="<?php echo project_url("admin/guide_associations.php"); ?>">
+                                        Guide Associations
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item"
+                                        href="<?php echo project_url("admin/unassociated_guides.php"); ?>">
+                                        Unassociated Guides
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     <?php endif; ?>
