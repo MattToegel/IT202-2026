@@ -61,6 +61,12 @@ $isLoggedIn = is_logged_in();
                                         Unassociated Guides
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="dropdown-item"
+                                        href="<?php echo project_url("admin/assign_guides.php"); ?>">
+                                        Assign Guides
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     <?php endif; ?>
