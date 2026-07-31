@@ -67,6 +67,7 @@ if (isset($_POST["email"], $_POST["username"], $_POST["password"], $_POST["confi
         <form method="post" action="register.php" onsubmit="return validate(this);">
 
             <?php
+            render_csrf_input();
             render_input([
                 "type" => "email",
                 "name" => "email",

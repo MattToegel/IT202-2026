@@ -155,6 +155,7 @@ try {
         </form>
         <form id="toggleForm" method="post">
             <?php
+            render_csrf_input();
             render_input([
                 "type" => "hidden",
                 "name" => "action",

@@ -105,6 +105,7 @@ if (!$stock) {
     <main>
         <h1>Edit <?php echo htmlspecialchars($stock["symbol"]); ?></h1>
         <form method="post">
+            <?php render_csrf_input(); ?>
             <label for="open">Open</label>
             <input id="open" name="open" type="number" min="0.0001" step="0.0001"
                 value="<?php echo htmlspecialchars($stock["open"]); ?>" required>

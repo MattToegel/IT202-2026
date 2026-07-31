@@ -225,6 +225,7 @@ if (
         <?php if ($is_edit): ?>
             <form method="post" action="?edit" onsubmit="return validate(this);">
                 <?php
+                render_csrf_input();
                 render_input(["type" => "hidden", "name" => "action", "value" => "details"]);
                 render_input([
                     "name" => "username",
@@ -250,6 +251,7 @@ if (
 
             <form method="post" action="?edit" onsubmit="return validate(this);">
                 <?php
+                render_csrf_input();
                 render_input(["type" => "hidden", "name" => "action", "value" => "password"]);
                 render_input([
                     "type" => "password",

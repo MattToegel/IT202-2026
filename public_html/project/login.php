@@ -57,6 +57,7 @@ if (isset($_POST["identifier"], $_POST["password"])) {
         unset($user["password_hash"]);
         $user["roles"] = get_user_roles($user["user_id"]);
         $_SESSION["user"] = $user;
+        rotate_csrf_token();
         // Add flash feedback before the existing redirect.
         flash("Welcome back.", "success");
         header("Location: dashboard.php");
@@ -86,6 +87,7 @@ $message = implode("<br>", array_map("htmlspecialchars", $errors));
             <!-- Existing form structure stays the same. Replace only the login identifier field. -->
             <!-- JS validation is a better place to split email-vs-username checks. -->
             <?php
+            render_csrf_input();
             render_input([
                 "name" => "identifier",
                 "label" => "Email or Username",

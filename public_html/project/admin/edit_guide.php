@@ -150,6 +150,7 @@ flash_errors($errors);
         <h1>Edit Guide</h1>
         <form method="post">
             <?php
+            render_csrf_input();
             render_input([
                 "name" => "title",
                 "value" => $guide["title"],

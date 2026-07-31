@@ -164,6 +164,7 @@ flash_errors($errors);
                                                     echo " hidden";
                                                 } ?>>
             <form method="post">
+                <?php render_csrf_input(); ?>
                 <h2>Search The API</h2>
                 <label for="search">Search text</label>
                 <input id="search" name="search" required>
@@ -175,6 +176,7 @@ flash_errors($errors);
                                                     echo " hidden";
                                                 } ?>>
             <form method="post">
+                <?php render_csrf_input(); ?>
                 <h2>Create Manually</h2>
                 <label for="symbol">Symbol</label>
                 <input id="symbol" name="symbol" required pattern="[A-Za-z0-9.\-]{1,10}">

@@ -155,6 +155,7 @@ if ($userSearch !== "") {
 
         <form id="toggleForm" method="post">
             <?php
+            render_csrf_input();
             render_input(["type" => "hidden", "name" => "action", "value" => "toggle_roles"]);
             render_input(["type" => "hidden", "name" => "username", "value" => $userSearch]);
             ?>

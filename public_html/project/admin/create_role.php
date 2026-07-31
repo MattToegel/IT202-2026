@@ -67,6 +67,7 @@ if (isset($_POST["name"], $_POST["description"])) {
 
         <form method="post">
             <?php
+            render_csrf_input();
             render_input([
                 "name" => "name",
                 "label" => "Role Name",
