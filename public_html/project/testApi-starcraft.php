@@ -39,7 +39,6 @@ flash_errors($errors);
     <main>
         <h1>Test StarCraft Guides API</h1>
         <form method="post">
-            <?php render_csrf_input(); ?>
             <label for="game">Game</label>
             <select id="game" name="game">
                 <option value="sc1"<?php if ($game === "sc1"): ?> selected<?php endif; ?>>StarCraft</option>
