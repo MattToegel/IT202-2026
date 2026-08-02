@@ -55,6 +55,7 @@ flash_errors($errors);
     <main>
         <h1>Test Stock API</h1>
         <form method="post">
+            <?php render_csrf_input(); ?>
             <label for="symbol">Stock symbol</label>
             <input id="symbol" name="symbol" value="<?php echo htmlspecialchars($symbol); ?>" required>
             <button name="source" value="live" type="submit">Fetch Live Quote</button>

@@ -13,6 +13,7 @@ $source_url = "";
 $game = "sc2";
 $action = "";
 if (isset($_POST["action"]) && is_string($_POST["action"])) {
+    require_csrf_token(project_url("admin/create_guide.php"));
     $action = $_POST["action"];
 }
 $active_form = "api";
@@ -178,6 +179,7 @@ flash_errors($errors);
                 <p>Call getGameGuides() for one StarCraft game and update matching API rows.</p>
                 <form method="post">
                     <?php
+                    render_csrf_input();
                     render_input([
                         "label" => "Game",
                         "type" => "select",
@@ -201,6 +203,7 @@ flash_errors($errors);
                 <h2>Create Manual Guide</h2>
                 <form method="post">
                     <?php
+                    render_csrf_input();
                     render_input([
                         "name" => "title",
                         "value" => $title,
