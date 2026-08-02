@@ -163,7 +163,6 @@ flash_errors($errors);
                                                     echo " hidden";
                                                 } ?>>
             <form method="post">
-                <?php render_csrf_input(); ?>
                 <h2>Fetch From API</h2>
                 <label for="symbol_fetch">Symbol</label>
                 <input id="symbol_fetch" name="symbol" required pattern="[A-Za-z0-9.\-]{1,10}">
@@ -175,7 +174,6 @@ flash_errors($errors);
                                                     echo " hidden";
                                                 } ?>>
             <form method="post">
-                <?php render_csrf_input(); ?>
                 <h2>Create Manually</h2>
                 <label for="symbol_create">Symbol</label>
                 <input id="symbol_create" name="symbol" required pattern="[A-Za-z0-9.\-]{1,10}">

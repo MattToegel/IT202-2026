@@ -55,7 +55,6 @@ flash_errors($errors);
     <main>
         <h1>Test Multiple Entities</h1>
         <form method="post">
-            <?php render_csrf_input(); ?>
             <label for="search">Search text</label>
             <input id="search" name="search" value="<?php echo htmlspecialchars($search); ?>" required>
             <button name="source" value="live" type="submit">Search Live API</button>

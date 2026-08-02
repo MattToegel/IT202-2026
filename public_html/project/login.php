@@ -58,7 +58,7 @@ if (isset($_POST["identifier"], $_POST["password"])) {
         unset($user["password_hash"]);
         $user["roles"] = get_user_roles($user["user_id"]);
         $_SESSION["user"] = $user;
-        rotate_csrf_token();
+        csrf_rotate_token();
         // Add flash feedback before the existing redirect.
         flash("Welcome back.", "success");
         header("Location: dashboard.php");

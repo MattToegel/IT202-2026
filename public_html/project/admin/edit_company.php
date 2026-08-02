@@ -94,7 +94,6 @@ if (!$company) {
     <main>
         <h1>Edit <?php echo htmlspecialchars($company["symbol"]); ?></h1>
         <form method="post">
-            <?php render_csrf_input(); ?>
             <label for="name">Name</label>
             <input id="name" name="name" value="<?php echo htmlspecialchars($company["name"]); ?>" required>
 
