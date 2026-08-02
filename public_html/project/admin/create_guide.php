@@ -13,6 +13,7 @@ $source_url = "";
 $game = "sc2";
 $action = "";
 if (isset($_POST["action"]) && is_string($_POST["action"])) {
+    require_csrf_token(project_url("admin/create_guide.php"));
     $action = $_POST["action"];
 }
 $active_form = "api";

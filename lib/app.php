@@ -1,4 +1,15 @@
 <?php
+$is_https = !empty($_SERVER["HTTPS"])
+    && $_SERVER["HTTPS"] !== "off";
+
+// Cookie settings must be configured before the session begins.
+session_set_cookie_params([
+    "lifetime" => 0,
+    "path" => "/project",
+    "secure" => $is_https,
+    "httponly" => true,
+    "samesite" => "Lax",
+]);
 session_start();
 
 // Every project page loads app.php, so one check protects every POST handler.
@@ -8,6 +19,8 @@ require_valid_csrf_token();
 require_once(__DIR__ . "/db.php");
 require_once(__DIR__ . "/db_helpers.php");
 require_once(__DIR__ . "/pagination_helpers.php");
+// render_csrf_input() will depend on csrf_token().
+require_once(__DIR__ . "/csrf_helpers.php");
 require_once(__DIR__ . "/render_functions.php");
 // url_helpers.php must load before helpers or partials that call project_url().
 require_once(__DIR__ . "/url_helpers.php");

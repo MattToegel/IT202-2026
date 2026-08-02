@@ -7,6 +7,7 @@ $name = "";
 $description = "";
 
 if (isset($_POST["name"], $_POST["description"])) {
+    require_csrf_token(project_url("admin/create_role.php"));
     $name = trim($_POST["name"]);
     $description = trim($_POST["description"]);
 

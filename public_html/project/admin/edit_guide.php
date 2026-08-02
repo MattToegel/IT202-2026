@@ -27,6 +27,7 @@ if ($id <= 0) {
 $errors = [];
 $guide = null;
 if (isset($_POST["action"]) && $_POST["action"] === "update_guide") {
+    require_csrf_token($return_to);
     $title = "";
     $primary_category = "";
     $player_race = "";

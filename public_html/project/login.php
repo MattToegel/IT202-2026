@@ -6,6 +6,7 @@ $identifier = "";
 $user = false;
 
 if (isset($_POST["identifier"], $_POST["password"])) {
+    require_csrf_token(project_url("login.php"));
     $identifier = trim($_POST["identifier"]);
     $password = $_POST["password"];
     $isEmailLogin = str_contains($identifier, "@");
