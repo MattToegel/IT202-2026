@@ -49,6 +49,11 @@ function validate_passwords_match(passwordInput, confirmInput, errors) {
 }
 
 function show_validation_errors(messageElement, errors) {
-    messageElement.innerHTML = errors.join("<br>");
+    messageElement.replaceChildren();
+    errors.forEach((error) => {
+        const row = document.createElement("p");
+        row.textContent = error;
+        messageElement.appendChild(row);
+    });
     return errors.length === 0;
 }

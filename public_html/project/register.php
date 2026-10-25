@@ -1,95 +1,96 @@
 <?php
 require_once(__DIR__ . "/../../lib/app.php");
+$page_title = "Register";
 $errors = [];
 $email = "";
+$notice = "";
 
 if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
-    $email = sanitize_email($_POST["email"]);
-    $password = $_POST["password"];
-    $confirmPassword = $_POST["confirm_password"];
-
-    validate_email($email, $errors);
-    validate_password($password, $errors);
-    validate_passwords_match($password, $confirmPassword, $errors);
-
-    if (empty($errors)) {
-        // TODO: connect to the database, hash the password, and insert the user.
-        try {
-            $db = getDB();
+    try {
+        $email = trim($_POST["email"]);
+        $password = $_POST["password"];
+        $confirm_password = $_POST["confirm_password"];
+        validate_email($email, $errors);
+        validate_password($password, $errors);
+        validate_passwords_match($password, $confirm_password, $errors);
+        if (empty($errors)) {
             $hash = password_hash($password, PASSWORD_BCRYPT);
-
+            $db = getDB();
             $stmt = $db->prepare(
                 "INSERT INTO Users (email, password_hash)
-             VALUES (:email, :password_hash)"
+                 VALUES (:email, :password_hash)"
             );
             $stmt->execute([
                 ":email" => $email,
                 ":password_hash" => $hash,
             ]);
-
-            error_log("Registration insert succeeded for user id " . $db->lastInsertId());
-            echo "Registration saved. This temporary message can be replaced later.";
+            $notice = "Account created";
             $email = "";
-        } catch (PDOException $e) {
-            if ($e->getCode() === "23000") {
-                $errors[] = "That email is already registered.";
-            } else {
-                error_log("Registration failed: " . $e->getMessage());
-                $errors[] = "Registration failed. Please try again.";
-            }
         }
+    } catch (TypeError | ValueError $e) {
+        error_log("Registration input failed: " . $e->getMessage());
+        $email = "";
+        $errors[] = "Registration failed. Please check the account fields.";
+    } catch (PDOException $e) {
+        if (($e->errorInfo[1] ?? null) === 1062) {
+            $errors[] = "That email is already registered.";
+        } else {
+            error_log("Registration query failed: " . $e->getMessage());
+            $errors[] = "Registration failed. Please try again.";
+        }
+    } catch (Exception $e) {
+        error_log("Registration failed: " . $e->getMessage());
+        $errors[] = "Registration failed. Please try again.";
     }
 }
 ?>
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title><?php echo htmlspecialchars($page_title); ?></title>
 </head>
-
 <body>
     <?php render_nav(); ?>
-    <h1>Register</h1>
-    <?php
-    if (!empty($errors)) {
-        echo "<pre>";
-        echo var_export($errors, true);
-        echo "</pre>";
-    }
-    ?>
+    <h1><?php echo htmlspecialchars($page_title); ?></h1>
+    <div id="feedback">
+        <?php foreach ($errors as $error): ?>
+            <p><?php echo htmlspecialchars($error); ?></p>
+        <?php endforeach; ?>
+        <p><?php echo htmlspecialchars($notice); ?></p>
+    </div>
     <form method="post" action="register.php" onsubmit="return validate(this);">
-        <p id="form-message"></p>
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email"
-            required autocomplete="email"
-            value="<?php echo htmlspecialchars($email); ?>">
+        <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required
+                   autocomplete="email" value="<?php echo htmlspecialchars($email); ?>">
+        </div>
 
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password"
-            required minlength="8" autocomplete="new-password">
+        <div>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" required minlength="8"
+                   autocomplete="new-password">
+        </div>
 
-        <label for="confirm_password">Confirm Password</label>
-        <input id="confirm_password" name="confirm_password" type="password"
-            required minlength="8" autocomplete="new-password">
+        <div>
+            <label for="confirm_password">Confirm Password</label>
+            <input id="confirm_password" name="confirm_password" type="password" required minlength="8"
+                   autocomplete="new-password">
+        </div>
 
-        <button type="submit">Register</button>
+        <div>
+            <button type="submit">Register</button>
+        </div>
     </form>
     <script>
-        function validate(form) {
-            const message = document.querySelector("#form-message");
-
-            const errors = [];
-
-            validate_email(form.email, errors);
-            validate_password(form.password, errors);
-            validate_passwords_match(form.password, form.confirm_password, errors);
-
-            return show_validation_errors(message, errors);
-        }
+    function validate(form) {
+        const errors = [];
+        validate_email(form.email, errors);
+        validate_password(form.password, errors);
+        validate_passwords_match(form.password, form.confirm_password, errors);
+        return show_validation_errors(document.getElementById("feedback"), errors);
+    }
     </script>
 </body>
-
 </html>

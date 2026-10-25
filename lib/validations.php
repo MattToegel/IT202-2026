@@ -1,7 +1,7 @@
 <?php
 function sanitize_email(string $email): string
 {
-    return filter_var(trim($email), FILTER_SANITIZE_EMAIL);
+    return trim($email);
 }
 
 function validate_email(string $email, array &$errors): bool
