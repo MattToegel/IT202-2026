@@ -52,7 +52,6 @@ try {
     flash("Could not load roles.", "danger");
 }
 ?>
-<!-- TODO add the list roles HTML snippet here. -->
 <!doctype html>
 <html lang="en">
 <head>

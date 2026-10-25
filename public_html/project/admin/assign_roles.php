@@ -129,7 +129,6 @@ if ($userSearch !== "") {
     }
 }
 ?>
-<!-- TODO add the assign roles markup snippet here. -->
 <!doctype html>
 <html lang="en">
 
