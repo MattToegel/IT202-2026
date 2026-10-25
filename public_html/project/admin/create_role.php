@@ -52,7 +52,6 @@ if (isset($_POST["name"], $_POST["description"])) {
     flash_errors($errors);
 }
 ?>
-<!-- TODO add the create role HTML snippet here. -->
 <!doctype html>
 <html lang="en">
 <head>
