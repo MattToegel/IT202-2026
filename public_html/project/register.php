@@ -1,107 +1,106 @@
 <?php
 require_once(__DIR__ . "/../../lib/app.php");
+$page_title = "Register";
 $errors = [];
 $email = "";
 $username = "";
 
 if (isset($_POST["email"], $_POST["username"], $_POST["password"], $_POST["confirm_password"])) {
-    $email = sanitize_email($_POST["email"]);
-    $username = trim($_POST["username"]);
-    $password = $_POST["password"];
-    $confirmPassword = $_POST["confirm_password"];
-
-    validate_email($email, $errors);
-    validate_username($username, $errors);
-    validate_password($password, $errors);
-    validate_passwords_match($password, $confirmPassword, $errors);
-
-    if (empty($errors)) {
-        // TODO: connect to the database, hash the password, and insert the user.
-        try {
-            $db = getDB();
+    try {
+        $email = trim($_POST["email"]);
+        $username = trim($_POST["username"]);
+        $password = $_POST["password"];
+        $confirm_password = $_POST["confirm_password"];
+        validate_email($email, $errors);
+        validate_username($username, $errors);
+        validate_password($password, $errors);
+        validate_passwords_match($password, $confirm_password, $errors);
+        if (empty($errors)) {
             $hash = password_hash($password, PASSWORD_BCRYPT);
-
+            $db = getDB();
             $stmt = $db->prepare(
                 "INSERT INTO Users (email, username, password_hash)
-             VALUES (:email, :username, :password_hash)"
+                 VALUES (:email, :username, :password_hash)"
             );
             $stmt->execute([
                 ":email" => $email,
                 ":username" => $username,
                 ":password_hash" => $hash,
             ]);
-
-            error_log("Registration insert succeeded for user id " . $db->lastInsertId());
-            flash("Account created. Please log in.", "success");
-            $email = "";
-            $username = "";
+            flash("Account created", "success");
             header("Location: login.php");
             exit;
-        } catch (PDOException $e) {
-            if ($e->getCode() === "23000") {
-                duplicate_user_detail($e, $errors);
-            } else {
-                error_log("Registration failed: " . $e->getMessage());
-                $errors[] = "Registration failed. Please try again.";
-            }
         }
+    } catch (TypeError | ValueError $e) {
+        error_log("Registration input failed: " . $e->getMessage());
+        $email = "";
+        $username = "";
+        $errors[] = "Registration failed. Please check the account fields.";
+    } catch (PDOException $e) {
+        if (($e->errorInfo[1] ?? null) === 1062) {
+            duplicate_user_detail($e, $errors);
+        } else {
+            error_log("Registration query failed: " . $e->getMessage());
+            $errors[] = "Registration failed. Please try again.";
+        }
+    } catch (Exception $e) {
+        error_log("Registration failed: " . $e->getMessage());
+        $errors[] = "Registration failed. Please try again.";
     }
-    // Any validation or PDO errors collected above redirect back to the form.
-    flash_errors($errors);
-    //header("Location: register.php");
-    //exit;
+    if (!empty($errors)) {
+        flash_errors($errors);
+    }
 }
 ?>
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title><?php echo htmlspecialchars($page_title); ?></title>
 </head>
-
 <body>
     <?php render_nav(); ?>
-    <h1>Register</h1>
-
+    <h1><?php echo htmlspecialchars($page_title); ?></h1>
     <form method="post" action="register.php" onsubmit="return validate(this);">
+        <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required
+                   autocomplete="email" value="<?php echo htmlspecialchars($email); ?>">
+        </div>
 
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email"
-            required autocomplete="email"
-            value="<?php echo htmlspecialchars($email); ?>">
-        <label for="username">Username</label>
-        <input id="username" name="username"
-            required minlength="3" maxlength="30" pattern="[a-z0-9_\-]{3,30}" 
-            title="Must be lowercase alphanumeric and can use underscore or hyphens"
-            autocomplete="username"
-            value="<?php echo htmlspecialchars($username); ?>">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password"
-            required minlength="8" autocomplete="new-password">
+        <div>
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" required minlength="3" maxlength="30" pattern="[a-z0-9_\-]{3,30}"
+                   autocomplete="username" value="<?php echo htmlspecialchars($username); ?>">
+        </div>
 
-        <label for="confirm_password">Confirm Password</label>
-        <input id="confirm_password" name="confirm_password" type="password"
-            required minlength="8" autocomplete="new-password">
+        <div>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" required minlength="8"
+                   autocomplete="new-password">
+        </div>
 
-        <button type="submit">Register</button>
+        <div>
+            <label for="confirm_password">Confirm Password</label>
+            <input id="confirm_password" name="confirm_password" type="password" required minlength="8"
+                   autocomplete="new-password">
+        </div>
+
+        <div>
+            <button type="submit">Register</button>
+        </div>
     </form>
     <script>
-        function validate(form) {
-
-            const errors = [];
-
-            validate_email(form.email, errors);
-            validate_username(form.username, errors);
-            validate_password(form.password, errors);
-            validate_passwords_match(form.password, form.confirm_password, errors);
-
-            return show_validation_errors(errors);
-        }
+    function validate(form) {
+        const errors = [];
+        validate_email(form.email, errors);
+        validate_username(form.username, errors);
+        validate_password(form.password, errors);
+        validate_passwords_match(form.password, form.confirm_password, errors);
+        return show_validation_errors(errors);
+    }
     </script>
-    <!-- Last PHP inside <body> so it captures messages queued during this request. -->
     <?php render_flash_messages(); ?>
 </body>
-
 </html>

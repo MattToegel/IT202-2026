@@ -27,7 +27,6 @@ if (!$currentUser) {
 
 $errors = [];
 
-// TODO 1: Add account-detail handling here.
 
 if (
     isset($_POST["action"], $_POST["username"], $_POST["email"])
@@ -76,7 +75,6 @@ if (
 }
 
 
-// TODO 2: Add password-change handling here.
 if (
     isset($_POST["action"], $_POST["current_password"], $_POST["new_password"], $_POST["confirm_password"])
     && $_POST["action"] === "password"
@@ -129,7 +127,6 @@ if (
 
     <h1>Profile</h1>
 
-    <!-- TODO 3: Add the account-detail and password-change forms here. -->
     <form method="post" action="profile.php" onsubmit="return validate(this);">
         <input type="hidden" name="action" value="details">
 
