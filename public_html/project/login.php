@@ -4,7 +4,7 @@ $page_title = "Login";
 
 $errors = [];
 $email = "";
-// Replace the processing comment in login.php, before HTML output.
+$notice = "";
 if (isset($_POST["email"], $_POST["password"])) {
     try {
         $email = trim($_POST["email"]);
@@ -40,7 +40,6 @@ if (isset($_POST["email"], $_POST["password"])) {
         $errors[] = "Login failed. Please try again.";
     }
 }
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -55,6 +54,7 @@ if (isset($_POST["email"], $_POST["password"])) {
         <?php foreach ($errors as $error): ?>
             <p><?php echo htmlspecialchars($error); ?></p>
         <?php endforeach; ?>
+        <p><?php echo htmlspecialchars($notice); ?></p>
     </div>
     <form method="post" action="login.php" onsubmit="return validate(this);">
         <div>
@@ -77,15 +77,15 @@ if (isset($_POST["email"], $_POST["password"])) {
     </form>
     <script>
     function validate(form) {
+        const email = form.email.value.trim();
+        const password = form.password.value;
         const errors = [];
 
-        if (!form.email.validity.valid) {
+        if (!email || !form.email.validity.valid) {
             errors.push("Enter a valid email address.");
         }
 
-        if (form.password.validity.valueMissing) {
-            errors.push("Enter your password.");
-        } else if (form.password.validity.tooShort) {
+        if (password.length < 8) {
             errors.push("Password must be at least 8 characters.");
         }
 
