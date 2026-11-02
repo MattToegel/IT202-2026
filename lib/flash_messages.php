@@ -1,37 +1,16 @@
 <?php
-function flash($msg = "", $color = "info") {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        error_log("Flash messages require an active session.");
-        return;
-    }
-
-    $message = ["text" => $msg, "color" => $color];
-    if (isset($_SESSION["flash"])) {
-        array_push($_SESSION["flash"], $message);
-    } else {
-        $_SESSION["flash"] = array();
-        array_push($_SESSION["flash"], $message);
-    }
+// File: lib/flash_messages.php; lib/app.php starts the session first.
+/** Called before redirecting to save one user-facing success notice. */
+function flash_notice(string $notice): void
+{
+    $_SESSION["flash_notice"] = $notice;
 }
 
-function flash_errors($errors, $color = "danger") {
-    foreach ($errors as $error) {
-        flash($error, $color);
-    }
-}
-
-function get_messages() {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        error_log("Flash messages require an active session.");
-        return [];
-    }
-
-    if (isset($_SESSION["flash"])) {
-        $flashes = $_SESSION["flash"];
-        $_SESSION["flash"] = array();
-        return $flashes;
-    }
-
-    return array();
+/** Called by the destination page to read and remove the saved notice. */
+function take_flash_notice(): string
+{
+    $notice = $_SESSION["flash_notice"] ?? "";
+    unset($_SESSION["flash_notice"]);
+    return $notice;
 }
 ?>

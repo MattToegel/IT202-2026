@@ -1,47 +1,28 @@
 <?php
-function sanitize_email(string $email): string
-{
-    return trim($email);
-}
-
-function validate_email(string $email, array &$errors): bool
-{
-    // The & lets this helper add messages to the caller's $errors array.
+// File: lib/validations.php
+/** Called by registration to append field errors without changing submitted values. */
+function validate_registration_input(
+    string $email,
+    string $password,
+    string $confirm_password,
+    array &$errors
+): void {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "Enter a valid email address.";
-        return false;
     }
-
-    return true;
-}
-
-function validate_username(string $username, array &$errors): bool
-{
-    if (!preg_match('/^[a-z0-9_-]{3,30}$/', $username)) {
-        $errors[] = "Use 3-30 lowercase letters, numbers, underscores, or hyphens.";
-        return false;
-    }
-
-    return true;
-}
-
-function validate_password(string $password, array &$errors): bool
-{
     if (strlen($password) < 8) {
-        $errors[] = "Password must be at least 8 characters.";
-        return false;
+        $errors[] = "Password is too short.";
     }
-
-    return true;
+    if ($password !== $confirm_password) {
+        $errors[] = "Passwords must match.";
+    }
 }
 
-function validate_passwords_match(string $password, string $confirm, array &$errors): bool
+/** Called by login to append one generic error for invalid credential input. */
+function validate_login_input(string $email, string $password, array &$errors): void
 {
-    if ($password !== $confirm) {
-        $errors[] = "Passwords must match.";
-        return false;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) === 0) {
+        $errors[] = "Invalid email or password.";
     }
-
-    return true;
 }
 ?>

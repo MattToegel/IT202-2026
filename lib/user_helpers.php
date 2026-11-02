@@ -1,29 +1,14 @@
 <?php
-function is_logged_in() {
+// File: lib/user_helpers.php
+/** Used by navigation and page guards to check the current login session. */
+function is_logged_in(): bool
+{
     return isset($_SESSION["user"]);
 }
 
-function get_user_id() {
-    if (!is_logged_in()) {
-        return 0;
-    }
-
-    return (int)($_SESSION["user"]["user_id"] ?? 0);
-}
-
-function get_user_email() {
-    if (!is_logged_in()) {
-        return "";
-    }
-
-    return $_SESSION["user"]["email"] ?? "";
-}
-
-function get_user_username() {
-    if (!is_logged_in()) {
-        return "";
-    }
-
-    return $_SESSION["user"]["username"] ?? "";
+/** Read the signed-in email for page output; callers still escape it when rendering. */
+function get_user_email(): string
+{
+    return is_logged_in() ? ($_SESSION["user"]["email"] ?? "") : "";
 }
 ?>
