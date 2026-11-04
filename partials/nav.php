@@ -11,3 +11,4 @@ $isLoggedIn = is_logged_in();
     <a href="/project/register.php">Register</a>
   <?php endif; ?>
 </nav>
+<script src="/project/helpers.js"></script>
