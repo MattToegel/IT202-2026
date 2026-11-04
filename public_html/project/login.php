@@ -81,7 +81,6 @@ if (isset($_POST["email"], $_POST["password"])) {
             <button type="submit">Login</button>
         </div>
     </form>
-    <script src="helpers.js" defer></script>
     <script>
     /**
      * Run this page's chosen checks before submitting its form.

@@ -89,7 +89,6 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
         </div>
     </form>
 
-    <script src="helpers.js" defer></script>
     <script>
     /**
      * Run this page's chosen checks before submitting its form.
