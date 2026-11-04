@@ -4,13 +4,17 @@ $page_title = "Login";
 
 $errors = [];
 $email = "";
-$notice = take_flash_notice();
 if (isset($_POST["email"], $_POST["password"])) {
     try {
         $email = trim($_POST["email"]);
         $password = $_POST["password"];
 
-        validate_login_input($email, $password, $errors);
+        validate_email($email, $errors);
+        validate_password($password, $errors);
+        if (!empty($errors)) {
+            // Keep credential feedback generic on this page.
+            $errors = ["Invalid email or password."];
+        }
         if (empty($errors)) {
             $stmt = getDB()->prepare(
                 "SELECT id, email, password_hash FROM Users WHERE email = :email LIMIT 1"
@@ -26,7 +30,7 @@ if (isset($_POST["email"], $_POST["password"])) {
                     "user_id" => (int) $user["id"],
                     "email" => $user["email"],
                 ];
-                flash_notice("Welcome back");
+                add_flash("Welcome back", "success");
                 header("Location: dashboard.php");
                 exit;
             }
@@ -52,12 +56,6 @@ if (isset($_POST["email"], $_POST["password"])) {
 <body>
     <?php render_nav(); ?>
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    <div id="feedback">
-        <?php foreach ($errors as $error): ?>
-            <p><?php echo htmlspecialchars($error); ?></p>
-        <?php endforeach; ?>
-        <p><?php echo htmlspecialchars($notice); ?></p>
-    </div>
     <form method="post" action="login.php" onsubmit="return validate(this);">
         <div>
             <label for="email">Email</label>
@@ -79,9 +77,21 @@ if (isset($_POST["email"], $_POST["password"])) {
     </form>
     <script src="helpers.js" defer></script>
     <script>
+    /**
+     * Run this page's chosen checks before submitting its form.
+     * @param {HTMLFormElement} form Form being submitted.
+     * @returns {boolean} True to allow submission, false to keep the form open.
+     */
     function validate(form) {
-        return showFeedback(loginErrors(form));
+        const errors = [];
+        validate_email(form.email, errors);
+        validate_password(form.password, errors);
+        return show_validation_errors(errors);
     }
     </script>
+    <?php
+    flash_errors($errors);
+    render_flash_messages();
+    ?>
 </body>
 </html>

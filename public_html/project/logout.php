@@ -5,7 +5,7 @@ session_unset();
 session_destroy();
 session_start();
 session_regenerate_id(true);
-flash_notice("Logged out");
+add_flash("Logged out", "success");
 
 header("Location: login.php");
 exit;

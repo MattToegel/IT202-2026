@@ -1,16 +1,46 @@
 <?php
-// File: lib/flash_messages.php; lib/app.php starts the session first.
-/** Called before redirecting to save one user-facing success notice. */
-function flash_notice(string $notice): void
+// File: lib/flash_messages.php; app.php starts the session first.
+/**
+ * Queue feedback before rendering a page or redirecting.
+ * @param string $msg User-facing text, without passwords or internal errors.
+ * @param string $color Display category, such as success or danger.
+ */
+function add_flash(string $msg = "", string $color = "info"): void
 {
-    $_SESSION["flash_notice"] = $notice;
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        error_log("Flash messages require an active session.");
+        return;
+    }
+    if (!isset($_SESSION["flash"])) {
+        $_SESSION["flash"] = [];
+    }
+    $_SESSION["flash"][] = ["text" => $msg, "color" => $color];
 }
 
-/** Called by the destination page to read and remove the saved notice. */
-function take_flash_notice(): string
+/**
+ * Queue the page's collected errors without rendering them.
+ * @param string[] $errors Errors collected during server validation.
+ * @param string $color Display category shared by these errors.
+ */
+function flash_errors(array $errors, string $color = "danger"): void
 {
-    $notice = $_SESSION["flash_notice"] ?? "";
-    unset($_SESSION["flash_notice"]);
-    return $notice;
+    foreach ($errors as $error) {
+        add_flash($error, $color);
+    }
+}
+
+/**
+ * Drain the session queue when the flash partial is ready to render.
+ * @return array[] Pending messages with text/color keys, in insertion order.
+ */
+function get_flash_messages(): array
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        error_log("Flash messages require an active session.");
+        return [];
+    }
+    $messages = $_SESSION["flash"] ?? [];
+    $_SESSION["flash"] = [];
+    return $messages;
 }
 ?>

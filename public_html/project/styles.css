@@ -1,20 +1,109 @@
+/* Shared flash display; keep the existing project theme rules below. */
+#flash {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    opacity: 0.9;
+    z-index: 1000;
+}
+#flash .row { margin-bottom: 0.5rem; }
+#flash .alert {
+    padding: 1rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+}
+/* Temporary alert colors until Bootstrap supplies these classes. */
+#flash .alert-primary { background-color: #cfe2ff; color: #084298; }
+#flash .alert-secondary { background-color: #e2e3e5; color: #41464b; }
+#flash .alert-success { background-color: #d1e7dd; color: #0f5132; }
+#flash .alert-danger { background-color: #f8d7da; color: #842029; }
+#flash .alert-warning { background-color: #fff3cd; color: #664d03; }
+#flash .alert-info { background-color: #cff4fc; color: #055160; }
+#flash .alert-light { background-color: #fefefe; color: #636464; }
+#flash .alert-dark { background-color: #212529; color: #fff; }
 /* File: public_html/project/styles.css */
-/* TODO: replace these starter colors and spacing with your own Milestone 1 styling */
-body {
-    font-family: sans-serif;
-    max-width: 56rem;
-    margin: 2rem auto;
-    line-height: 1.5;
+/* TODO: replace this hideous CSS with your own Milestone 1 theme */
+nav li {
+    display: inline;
+    background-color: rebeccapurple;
 }
-nav ul {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
-    padding: 0;
+
+nav li a {
+    color: rgb(4, 179, 120);
+    padding: .25rem;
 }
-form > div {
-    margin-bottom: 1rem;
+
+nav li a:hover {
+    color: pink;
 }
+
+nav::after {
+    text-align: center;
+    content: "(*Edit the hideous css)";
+    color: red;
+}
+
 label {
-    display: block;
+    border: #212529 dashed 2px;
+    background-color: bisque;
 }
+
+input {
+    border-radius: 25%;
+    padding: .25rem;
+}
+
+input:hover {
+    transform: rotateZ(10deg);
+}
+
+form,
+h3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body {
+    background-color: rgb(0, 68, 48);
+    color: rgb(255, 19, 235);
+}
+
+input[type="submit"]:hover,
+button[type="submit"]:hover {
+    transform: scale(1.15);
+}
+
+input[type="submit"]:active,
+button[type="submit"]:active {
+    transform: scale(.75);
+}
+
+/* Summer-style welcome card and links; Bootstrap can supply these later. */
+.jumbotron {
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    background-color: #e9ecef;
+    color: #212529;
+    border-radius: 0.3rem;
+    text-align: center;
+}
+.display-4 { font-size: 2.5rem; font-weight: 300; }
+.lead { font-size: 1.25rem; font-weight: 300; }
+.btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    display: inline-block;
+}
+.btn-primary { background-color: #007bff; color: #fff; }
+.btn-primary:hover, .btn-primary:focus { background-color: #0056b3; }
+.btn-secondary { background-color: #6c757d; color: #fff; }
+.btn-secondary:hover, .btn-secondary:focus { background-color: #495057; }

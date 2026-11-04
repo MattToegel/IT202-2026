@@ -3,14 +3,15 @@ require_once(__DIR__ . "/../../lib/app.php");
 $page_title = "Register";
 $errors = [];
 $email = "";
-$notice = "";
 if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
     try {
         $email = trim($_POST["email"]);
         $password = $_POST["password"];
         $confirm_password = $_POST["confirm_password"];
 
-        validate_registration_input($email, $password, $confirm_password, $errors);
+        validate_email($email, $errors);
+        validate_password($password, $errors);
+        validate_passwords_match($password, $confirm_password, $errors);
         if (empty($errors)) {
             $hash = password_hash($password, PASSWORD_BCRYPT);
             $db = getDB();
@@ -23,7 +24,7 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
                 ":email" => $email,
                 ":password_hash" => $hash,
             ]);
-            flash_notice("Account created");
+            add_flash("Account created", "success");
             header("Location: login.php");
             exit;
         }
@@ -57,12 +58,6 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
 <body>
     <?php render_nav(); ?>
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    <div id="feedback">
-        <?php foreach ($errors as $error): ?>
-            <p><?php echo htmlspecialchars($error); ?></p>
-        <?php endforeach; ?>
-        <p><?php echo htmlspecialchars($notice); ?></p>
-    </div>
     <form method="post" action="register.php" onsubmit="return validate(this);">
         <div>
             <label for="email">Email</label>
@@ -90,9 +85,22 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
 
     <script src="helpers.js" defer></script>
     <script>
+    /**
+     * Run this page's chosen checks before submitting its form.
+     * @param {HTMLFormElement} form Form being submitted.
+     * @returns {boolean} True to allow submission, false to keep the form open.
+     */
     function validate(form) {
-        return showFeedback(registrationErrors(form));
+        const errors = [];
+        validate_email(form.email, errors);
+        validate_password(form.password, errors);
+        validate_passwords_match(form.password, form.confirm_password, errors);
+        return show_validation_errors(errors);
     }
     </script>
+    <?php
+    flash_errors($errors);
+    render_flash_messages();
+    ?>
 </body>
 </html>
