@@ -44,6 +44,7 @@ if (isset($_POST["email"], $_POST["password"])) {
         $errors[] = "Login failed. Please try again.";
     }
 }
+flash_errors($errors);
 ?>
 <!doctype html>
 <html lang="en">
@@ -88,9 +89,6 @@ if (isset($_POST["email"], $_POST["password"])) {
         return show_validation_errors(errors);
     }
     </script>
-    <?php
-    flash_errors($errors);
-    render_flash_messages();
-    ?>
+    <?php render_flash_messages(); ?>
 </body>
 </html>
