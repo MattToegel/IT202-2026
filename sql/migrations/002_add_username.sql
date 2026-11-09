@@ -1,0 +1,3 @@
+ALTER TABLE Users ADD COLUMN username VARCHAR(30) NULL UNIQUE AFTER email;
+UPDATE Users SET username = CONCAT('user_', id) WHERE username IS NULL;
+ALTER TABLE Users MODIFY COLUMN username VARCHAR(30) NOT NULL;

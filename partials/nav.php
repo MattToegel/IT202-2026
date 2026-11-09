@@ -1,19 +1,15 @@
 <?php
-// File: partials/nav.php
 $isLoggedIn = is_logged_in();
 ?>
-<link rel="stylesheet" href="/project/styles.css">
 <nav>
-    <ul>
-        <li><a href="/project/index.php">Home</a></li>
-        <?php if ($isLoggedIn): ?>
-            <li><a href="/project/dashboard.php">Dashboard</a></li>
-            <li><a href="/project/profile.php">Profile</a></li>
-            <li><a href="/project/logout.php">Logout</a></li>
-        <?php else: ?>
-            <li><a href="/project/login.php">Login</a></li>
-            <li><a href="/project/register.php">Register</a></li>
-        <?php endif; ?>
-    </ul>
+  <a href="/project/index.php">Home</a>
+  <?php if ($isLoggedIn): ?>
+    <a href="/project/dashboard.php">Dashboard</a>
+    <a href="/project/profile.php">Profile</a>
+    <a href="/project/logout.php">Logout</a>
+  <?php else: ?>
+    <a href="/project/login.php">Login</a>
+    <a href="/project/register.php">Register</a>
+  <?php endif; ?>
 </nav>
 <script src="/project/helpers.js"></script>

@@ -1,48 +1,51 @@
 <?php
 require_once(__DIR__ . "/../../lib/app.php");
 $page_title = "Login";
+
 $errors = [];
 $email = "";
-
 if (isset($_POST["email"], $_POST["password"])) {
     try {
         $email = trim($_POST["email"]);
-        validate_email($email, $errors);
         $password = $_POST["password"];
-        if ($password === "") {
-            $errors[] = "Invalid email or password.";
+
+        validate_email($email, $errors);
+        validate_password($password, $errors);
+        if (!empty($errors)) {
+            // Keep credential feedback generic on this page.
+            $errors = ["Invalid email or password."];
         }
         if (empty($errors)) {
             $stmt = getDB()->prepare(
-                "SELECT id AS user_id, email, username, password_hash FROM Users
-                 WHERE email = :email LIMIT 1"
+                "SELECT id, email, username, password_hash FROM Users WHERE email = :email LIMIT 1"
             );
             $stmt->execute([":email" => $email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
             if (!$user || !password_verify($password, $user["password_hash"])) {
                 $errors[] = "Invalid email or password.";
             } else {
                 session_regenerate_id(true);
-                unset($user["password_hash"]);
-                $user["user_id"] = (int) $user["user_id"];
-                $_SESSION["user"] = $user;
-                flash("Welcome back.", "success");
+                $_SESSION["user"] = [
+                    "user_id" => (int) $user["id"],
+                    "email" => $user["email"],
+                    "username" => $user["username"],
+                ];
+                add_flash("Welcome back", "success");
                 header("Location: dashboard.php");
                 exit;
             }
         }
     } catch (TypeError $e) {
         error_log("Login input failed: " . $e->getMessage());
-        $email = "";
+        $email = ""; // Keep the form safe to redisplay after malformed input.
         $errors[] = "Invalid email or password.";
     } catch (Exception $e) {
         error_log("Login failed: " . $e->getMessage());
         $errors[] = "Login failed. Please try again.";
     }
-    if (!empty($errors)) {
-        flash_errors($errors);
-    }
 }
+flash_errors($errors);
 ?>
 <!doctype html>
 <html lang="en">
@@ -50,6 +53,7 @@ if (isset($_POST["email"], $_POST["password"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?></title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <?php render_nav(); ?>
@@ -58,12 +62,14 @@ if (isset($_POST["email"], $_POST["password"])) {
         <div>
             <label for="email">Email</label>
             <input id="email" name="email" type="email" required
-                   autocomplete="email" value="<?php echo htmlspecialchars($email); ?>">
+                   autocomplete="email"
+                   value="<?php echo htmlspecialchars($email); ?>">
         </div>
 
         <div>
             <label for="password">Password</label>
-            <input id="password" name="password" type="password" required minlength="8"
+            <input id="password" name="password" type="password"
+                   required minlength="8"
                    autocomplete="current-password">
         </div>
 
@@ -72,6 +78,11 @@ if (isset($_POST["email"], $_POST["password"])) {
         </div>
     </form>
     <script>
+    /**
+     * Run this page's chosen checks before submitting its form.
+     * @param {HTMLFormElement} form Form being submitted.
+     * @returns {boolean} True to allow submission, false to keep the form open.
+     */
     function validate(form) {
         const errors = [];
         validate_email(form.email, errors);
