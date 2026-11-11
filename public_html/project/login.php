@@ -3,27 +3,33 @@ require_once(__DIR__ . "/../../lib/app.php");
 $page_title = "Login";
 
 $errors = [];
-$email = "";
-if (isset($_POST["email"], $_POST["password"])) {
+$identifier = "";
+if (isset($_POST["identifier"], $_POST["password"])) {
     try {
-        $email = trim($_POST["email"]);
+        $identifier = trim($_POST["identifier"]);
         $password = $_POST["password"];
 
-        validate_email($email, $errors);
+        $isEmail = str_contains($identifier, "@");
+        if ($isEmail) {
+            validate_email($identifier, $errors);
+        } else {
+            validate_username($identifier, $errors);
+        }
         validate_password($password, $errors);
         if (!empty($errors)) {
             // Keep credential feedback generic on this page.
-            $errors = ["Invalid email or password."];
+            $errors = ["Invalid username/email or password."];
         }
         if (empty($errors)) {
+            $column = $isEmail ? "email" : "username";
             $stmt = getDB()->prepare(
-                "SELECT id, email, username, password_hash FROM Users WHERE email = :email LIMIT 1"
+                "SELECT id, email, username, password_hash FROM Users WHERE $column = :identifier LIMIT 1"
             );
-            $stmt->execute([":email" => $email]);
+            $stmt->execute([":identifier" => $identifier]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$user || !password_verify($password, $user["password_hash"])) {
-                $errors[] = "Invalid email or password.";
+                $errors[] = "Invalid username/email or password.";
             } else {
                 session_regenerate_id(true);
                 $_SESSION["user"] = [
@@ -39,8 +45,8 @@ if (isset($_POST["email"], $_POST["password"])) {
         }
     } catch (TypeError $e) {
         error_log("Login input failed: " . $e->getMessage());
-        $email = ""; // Keep the form safe to redisplay after malformed input.
-        $errors[] = "Invalid email or password.";
+        $identifier = ""; // Keep the form safe to redisplay after malformed input.
+        $errors[] = "Invalid username/email or password.";
     } catch (Exception $e) {
         error_log("Login failed: " . $e->getMessage());
         $errors[] = "Login failed. Please try again.";
@@ -60,10 +66,11 @@ flash_errors($errors);
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
     <form method="post" action="login.php" onsubmit="return validate(this);">
         <div>
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" required
-                   autocomplete="email"
-                   value="<?php echo htmlspecialchars($email); ?>">
+            <label for="identifier">Username or Email</label>
+            <input id="identifier" name="identifier" type="text" required
+                   pattern="(?:[a-z0-9_\-]{3,30}|[^\s@]+@[^\s@]+\.[^\s@]+)"
+                   autocomplete="username"
+                   value="<?php echo htmlspecialchars($identifier); ?>">
         </div>
 
         <div>
@@ -85,7 +92,11 @@ flash_errors($errors);
      */
     function validate(form) {
         const errors = [];
-        validate_email(form.email, errors);
+        if (form.identifier.value.includes("@")) {
+            validate_email(form.identifier, errors);
+        } else {
+            validate_username(form.identifier, errors);
+        }
         validate_password(form.password, errors);
         return show_validation_errors(errors);
     }
