@@ -43,6 +43,20 @@ function validate_passwords_match(passwordInput, confirmInput, errors) {
 }
 
 /**
+ * Check a username field with the same rule as PHP.
+ * @param {HTMLInputElement} input Field to validate.
+ * @param {string[]} errors Collected page errors.
+ * @returns {boolean} Whether the username is valid.
+ */
+function validate_username(input, errors) {
+    if (!/^[a-z0-9_-]{3,30}$/.test(input.value.trim())) {
+        errors.push("Username must use 3-30 lowercase letters, numbers, underscores or hyphens.");
+        return false;
+    }
+    return true;
+}
+
+/**
  * Add JS-labeled safe text to #flash; does not write to the PHP session.
  * @param {string} message Text to display.
  * @param {string} color Display category, such as info or danger.
