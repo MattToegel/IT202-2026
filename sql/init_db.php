@@ -110,6 +110,9 @@ try {
 
     foreach ($files as $filename) {
         $file = basename($filename);
+        if (str_ends_with($file, '.manual.sql')) {
+            continue;
+        }
         if (preg_match('/^\d{3}_/', $file)) {
             $valid_sql[$filename] = file_get_contents($filename);
         } else {
