@@ -4,7 +4,6 @@ $page_title = "Login";
 
 $errors = [];
 $email = "";
-$notice = "";
 if (isset($_POST["email"], $_POST["password"])) {
     try {
         $email = trim($_POST["email"]);
@@ -31,6 +30,7 @@ if (isset($_POST["email"], $_POST["password"])) {
                     "user_id" => (int) $user["id"],
                     "email" => $user["email"],
                 ];
+                add_flash("Welcome back", "success");
                 header("Location: dashboard.php");
                 exit;
             }
@@ -44,6 +44,7 @@ if (isset($_POST["email"], $_POST["password"])) {
         $errors[] = "Login failed. Please try again.";
     }
 }
+flash_errors($errors);
 ?>
 <!doctype html>
 <html lang="en">
@@ -55,12 +56,6 @@ if (isset($_POST["email"], $_POST["password"])) {
 <body>
     <?php render_nav(); ?>
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    <div id="feedback">
-        <?php foreach ($errors as $error): ?>
-            <p><?php echo htmlspecialchars($error); ?></p>
-        <?php endforeach; ?>
-        <p><?php echo htmlspecialchars($notice); ?></p>
-    </div>
     <form method="post" action="login.php" onsubmit="return validate(this);">
         <div>
             <label for="email">Email</label>
@@ -93,5 +88,6 @@ if (isset($_POST["email"], $_POST["password"])) {
         return show_validation_errors(errors);
     }
     </script>
+    <?php render_flash_messages(); ?>
 </body>
 </html>
