@@ -30,9 +30,10 @@ if (isset($_POST["email"], $_POST["password"])) {
                     "user_id" => (int) $user["id"],
                     "email" => $user["email"],
                     "username" => $user["username"],
+                    "roles" => get_user_roles((int) $user["id"]),
                 ];
                 add_flash("Welcome back", "success");
-                header("Location: dashboard.php");
+                header("Location: " . project_url("dashboard.php"));
                 exit;
             }
         }
