@@ -51,7 +51,6 @@ if (isset($_POST["email"], $_POST["password"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?></title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <?php render_nav(); ?>
