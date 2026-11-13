@@ -21,9 +21,8 @@ if (isset($_POST["identifier"], $_POST["password"])) {
             $errors = ["Invalid username/email or password."];
         }
         if (empty($errors)) {
-            $column = $isEmail ? "email" : "username";
             $stmt = getDB()->prepare(
-                "SELECT id, email, username, password_hash FROM Users WHERE $column = :identifier LIMIT 1"
+                "SELECT id, email, username, password_hash FROM Users WHERE email = :identifier OR username = :identifier LIMIT 1"
             );
             $stmt->execute([":identifier" => $identifier]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
