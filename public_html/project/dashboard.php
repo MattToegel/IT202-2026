@@ -19,5 +19,6 @@ if (!is_logged_in()) {
     <?php render_nav(); ?>
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
     <p>Welcome, <?php echo htmlspecialchars(get_user_email()); ?></p>
+    <?php render_flash_messages(); ?>
 </body>
 </html>

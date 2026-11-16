@@ -24,5 +24,6 @@ $page_title = "Welcome to My Project";
             <a class="btn btn-secondary" href="login.php">Login</a>
         </p>
     </div>
+    <?php render_flash_messages(); ?>
 </body>
 </html>

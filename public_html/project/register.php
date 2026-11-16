@@ -3,7 +3,6 @@ require_once(__DIR__ . "/../../lib/app.php");
 $page_title = "Register";
 $errors = [];
 $email = "";
-$notice = "";
 if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
     try {
         $email = trim($_POST["email"]);
@@ -25,8 +24,9 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
                 ":email" => $email,
                 ":password_hash" => $hash,
             ]);
-            $notice = "Account created";
-            $email = "";
+            add_flash("Account created", "success");
+            header("Location: login.php");
+            exit;
         }
     } catch (TypeError | ValueError $e) {
         // Either invalid types or unsupported values use this response.
@@ -46,6 +46,7 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
         $errors[] = "Registration failed. Please try again.";
     }
 }
+flash_errors($errors);
 ?>
 <!doctype html>
 <html lang="en">
@@ -57,12 +58,6 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
 <body>
     <?php render_nav(); ?>
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    <div id="feedback">
-        <?php foreach ($errors as $error): ?>
-            <p><?php echo htmlspecialchars($error); ?></p>
-        <?php endforeach; ?>
-        <p><?php echo htmlspecialchars($notice); ?></p>
-    </div>
     <form method="post" action="register.php" onsubmit="return validate(this);">
         <div>
             <label for="email">Email</label>
@@ -102,5 +97,6 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
         return show_validation_errors(errors);
     }
     </script>
+    <?php render_flash_messages(); ?>
 </body>
 </html>

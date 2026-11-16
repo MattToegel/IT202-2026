@@ -43,17 +43,30 @@ function validate_passwords_match(passwordInput, confirmInput, errors) {
 }
 
 /**
- * Replace #feedback with the current errors as safe text rows.
+ * Add JS-labeled safe text to #flash; does not write to the PHP session.
+ * @param {string} message Text to display.
+ * @param {string} color Display category, such as info or danger.
+ */
+function add_flash(message = "", color = "info") {
+    const flash = document.getElementById("flash");
+    const row = document.createElement("div");
+    row.className = "row justify-content-center";
+    const alert = document.createElement("div");
+    alert.className = `alert alert-${color}`;
+    alert.textContent = `(js) ${message}`;
+    row.appendChild(alert);
+    flash.appendChild(row);
+}
+
+/**
+ * Replace #flash with the current form's validation errors.
  * @param {string[]} errors Results collected by the page's validate function.
  * @returns {boolean} True when no errors block submission.
  */
 function show_validation_errors(errors) {
-    const feedback = document.getElementById("feedback");
-    feedback.replaceChildren();
+    document.getElementById("flash").replaceChildren();
     for (const error of errors) {
-        const message = document.createElement("p");
-        message.textContent = error;
-        feedback.appendChild(message);
+        add_flash(error, "danger");
     }
     return errors.length === 0;
 }

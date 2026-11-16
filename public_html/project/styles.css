@@ -1,3 +1,29 @@
+/* Shared flash display; keep the existing project theme rules below. */
+#flash {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    opacity: 0.9;
+    z-index: 1000;
+}
+#flash .row { margin-bottom: 0.5rem; }
+#flash .alert {
+    padding: 1rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+}
+/* Temporary alert colors until Bootstrap supplies these classes. */
+#flash .alert-primary { background-color: #cfe2ff; color: #084298; }
+#flash .alert-secondary { background-color: #e2e3e5; color: #41464b; }
+#flash .alert-success { background-color: #d1e7dd; color: #0f5132; }
+#flash .alert-danger { background-color: #f8d7da; color: #842029; }
+#flash .alert-warning { background-color: #fff3cd; color: #664d03; }
+#flash .alert-info { background-color: #cff4fc; color: #055160; }
+#flash .alert-light { background-color: #fefefe; color: #636464; }
+#flash .alert-dark { background-color: #212529; color: #fff; }
 /* File: public_html/project/styles.css */
 /* TODO: replace this hideous CSS with your own Milestone 1 theme */
 nav li {
