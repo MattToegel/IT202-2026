@@ -7,12 +7,11 @@ $page_title = "Welcome to My Project";
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
+    <main class="container py-4">
     <div class="jumbotron">
         <h1 class="display-4"><?php echo htmlspecialchars($page_title); ?></h1>
         <!-- TODO: add your project description and semester. -->
@@ -24,6 +23,8 @@ $page_title = "Welcome to My Project";
             <a class="btn btn-secondary" href="login.php">Login</a>
         </p>
     </div>
+    </main>
     <?php render_flash_messages(); ?>
+    <?php render_scripts(); ?>
 </body>
 </html>

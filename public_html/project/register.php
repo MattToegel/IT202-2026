@@ -50,44 +50,51 @@ flash_errors($errors);
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
+    <main class="container py-4">
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    <form method="post" action="register.php" onsubmit="return validate(this);">
-        <div>
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email"
-                   required autocomplete="email"
-                   value="<?php echo htmlspecialchars($email); ?>">
-        </div>
+    <form method="post" action="register.php" onsubmit="return validate(this)">
+    <?php
+    render_input([
+        "type" => "email",
+        "name" => "email",
+        "label" => "Email",
+        "value" => $email,
+        "attributes" => ["required" => true, "autocomplete" => "email"],
+    ]);
 
-        <div>
-            <label for="username">Username</label>
-            <input id="username" name="username" required minlength="3" maxlength="30"
-                   pattern="[a-z0-9_\-]{3,30}" autocomplete="username"
-                   value="<?php echo htmlspecialchars($username); ?>">
-        </div>
+    render_input([
+        "name" => "username",
+        "label" => "Username",
+        "value" => $username,
+        "attributes" => [
+            "required" => true,
+            "minlength" => 3,
+            "maxlength" => 30,
+            "pattern" => "[a-z0-9_\\-]{3,30}",
+            "autocomplete" => "username",
+        ],
+    ]);
 
-        <div>
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password"
-                   required minlength="8" autocomplete="new-password">
-        </div>
+    render_input([
+        "type" => "password",
+        "name" => "password",
+        "label" => "Password",
+        "attributes" => ["required" => true, "minlength" => 8, "autocomplete" => "new-password"],
+    ]);
 
-        <div>
-            <label for="confirm_password">Confirm Password</label>
-            <input id="confirm_password" name="confirm_password" type="password"
-                   required minlength="8" autocomplete="new-password">
-        </div>
-
-        <div>
-            <button type="submit">Register</button>
-        </div>
-    </form>
+    render_input([
+        "type" => "password",
+        "name" => "confirm_password",
+        "label" => "Confirm Password",
+        "attributes" => ["required" => true, "minlength" => 8, "autocomplete" => "new-password"],
+    ]);
+    render_button(["text" => "Register"]);
+    ?>
+</form>
 
     <script>
     /**
@@ -104,6 +111,8 @@ flash_errors($errors);
         return show_validation_errors(errors);
     }
     </script>
+    </main>
     <?php render_flash_messages(); ?>
+    <?php render_scripts(); ?>
 </body>
 </html>

@@ -79,35 +79,42 @@ if (!$result) {
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
-    <main>
+    <main class="container py-4">
         <h1><?php echo htmlspecialchars($page_title); ?>: <?php echo htmlspecialchars($result["symbol"]); ?></h1>
         <form method="post" onsubmit="return validate(this);">
-            <div>
-                <label for="open">Open</label>
-                <input id="open" name="open" type="number" min="0.0001" step="0.0001"
-                value="<?php echo htmlspecialchars($result["open"]); ?>" required>
-            </div>
+            <?php render_input([
+    "name" => "open",
+    "id" => "open",
+    "type" => "number",
+    "label" => "Open",
+    "value" => $result["open"],
+    "attributes" => ["min" => "0.0001", "step" => "0.0001", "required" => true],
+]); ?>
+
+            <?php render_input([
+    "name" => "high",
+    "id" => "high",
+    "type" => "number",
+    "label" => "High",
+    "value" => $result["high"],
+    "attributes" => ["min" => "0.0001", "step" => "0.0001", "required" => true],
+]); ?>
+
+            <?php render_input([
+    "name" => "price",
+    "id" => "price",
+    "type" => "number",
+    "label" => "Price",
+    "value" => $result["price"],
+    "attributes" => ["min" => "0.0001", "step" => "0.0001", "required" => true],
+]); ?>
 
             <div>
-                <label for="high">High</label>
-                <input id="high" name="high" type="number" min="0.0001" step="0.0001"
-                value="<?php echo htmlspecialchars($result["high"]); ?>" required>
-            </div>
-
-            <div>
-                <label for="price">Price</label>
-                <input id="price" name="price" type="number" min="0.0001" step="0.0001"
-                value="<?php echo htmlspecialchars($result["price"]); ?>" required>
-            </div>
-
-            <div>
-                <button name="save" value="1" type="submit">Save Stock</button>
+                <?php render_button(["text" => "Save Stock", "attributes" => ["name" => "save", "value" => "1"]]); ?>
             </div>
         </form>
     </main>
@@ -131,5 +138,6 @@ if (!$result) {
             return show_validation_errors(errors);
         }
     </script>
+    <?php render_scripts(); ?>
 </body>
 </html>

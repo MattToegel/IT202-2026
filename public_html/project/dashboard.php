@@ -11,14 +11,15 @@ if (!is_logged_in()) {
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
+    <main class="container py-4">
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
     <p>Welcome, <?php echo htmlspecialchars(get_user_username()); ?></p>
+    </main>
     <?php render_flash_messages(); ?>
+    <?php render_scripts(); ?>
 </body>
 </html>

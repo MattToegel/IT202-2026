@@ -60,26 +60,39 @@ flash_errors($errors);
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
+    <main class="container py-4">
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    <form method="post" onsubmit="return validate(this);">
-        <div><label for="name">Role Name</label>
-        <input id="name" name="name" required minlength="2" maxlength="30"
-            pattern="[A-Za-z][A-Za-z0-9 ._\-]*"
-            value="<?php echo htmlspecialchars($name); ?>"></div>
-
-        <div><label for="description">Description</label>
-        <textarea id="description" name="description" maxlength="255"><?php
-            echo htmlspecialchars($description);
-        ?></textarea></div>
-
-        <div><button type="submit">Create Role</button></div>
-    </form>
+    <!-- public_html/project/admin/create_role.php form -->
+<form method="post" onsubmit="return validate(this);">
+    <?php
+    render_input([
+        "name" => "name",
+        "label" => "Role Name",
+        "value" => $name,
+        "attributes" => [
+            "required" => true,
+            "minlength" => 2,
+            "maxlength" => 30,
+            "pattern" => "[A-Za-z][A-Za-z0-9 ._\\-]*",
+            "pattern" => "[A-Za-z][A-Za-z0-9 ._\\-]*",
+        ],
+    ]);
+    render_input([
+        "type" => "textarea",
+        "name" => "description",
+        "value" => $description,
+        "attributes" => [
+            "maxlength" => 255,
+            "rows" => 3,
+        ],
+    ]);
+    render_button(["text" => "Create Role"]);
+    ?>
+</form>
     <script>
     /**
      * Validate role fields before the independent PHP handler.
@@ -97,6 +110,8 @@ flash_errors($errors);
         return show_validation_errors(errors);
     }
     </script>
+    </main>
     <?php render_flash_messages(); ?>
+    <?php render_scripts(); ?>
 </body>
 </html>

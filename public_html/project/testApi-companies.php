@@ -44,13 +44,11 @@ flash_errors($errors);
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
-    <main>
+    <main class="container py-4">
         <h1><?php echo htmlspecialchars($page_title); ?></h1>
         <form method="post" onsubmit="return validate(this);">
             <div>
@@ -89,5 +87,6 @@ flash_errors($errors);
             return show_validation_errors(errors);
         }
     </script>
+    <?php render_scripts(); ?>
 </body>
 </html>

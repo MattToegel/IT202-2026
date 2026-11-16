@@ -21,38 +21,23 @@ try {
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Companies</title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
-    <main>
+    <main class="container py-4">
         <h1>Companies</h1>
-        <table>
-            <thead>
-                <tr><th>Symbol</th><th>Name</th><th>Type</th><th>Region</th><th>Source</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-                <?php foreach ($results as $result): ?>
-                    <?php
-                    $source_label = "Manual";
-                    if ($result["is_api"]) {
-                        $source_label = "API";
-                    }
-                    ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($result["symbol"]); ?></td>
-                        <td><?php echo htmlspecialchars($result["name"]); ?></td>
-                        <td><?php echo htmlspecialchars($result["type"]); ?></td>
-                        <td><?php echo htmlspecialchars($result["region"]); ?></td>
-                        <td><?php echo $source_label; ?></td>
-                        <td><a href="edit_company.php?id=<?php echo urlencode($result["id"]); ?>">Edit</a></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <?php
+foreach ($results as &$result) {
+    $result["source"] = $result["is_api"] ? "API" : "Manual";
+}
+unset($result);
+$columns = ["symbol" => "Symbol", "name" => "Name", "type" => "Type", "region" => "Region", "source" => "Source"];
+$actions = [["label" => "Edit", "url" => "admin/edit_company.php"]];
+render_table($results, $columns, $actions);
+?>
     </main>
     <?php render_flash_messages(); ?>
+    <?php render_scripts(); ?>
 </body>
 </html>

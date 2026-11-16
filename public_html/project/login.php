@@ -57,33 +57,39 @@ flash_errors($errors);
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
+    <main class="container py-4">
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    <form method="post" action="login.php" onsubmit="return validate(this);">
-        <div>
-            <label for="identifier">Username or Email</label>
-            <input id="identifier" name="identifier" type="text" required
-                   pattern="(?:[a-z0-9_\-]{3,30}|[^\s@]+@[^\s@]+\.[^\s@]+)"
-                   autocomplete="username"
-                   value="<?php echo htmlspecialchars($identifier); ?>">
-        </div>
+    <form method="post" action="login.php" onsubmit="return validate(this)">
+    <?php
+    render_input([
+        "name" => "identifier",
+        "label" => "Username or Email",
+        "value" => $identifier,
+        "attributes" => [
+            "required" => true,
+            "autocomplete" => "username",
+            "pattern" => "(?:[a-z0-9_\\-]{3,30}|[^\\s@]+@[^\\s@]+\\.[^\\s@]+)",
+            "title" => "Enter a username or email address",
+        ],
+    ]);
 
-        <div>
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password"
-                   required minlength="8"
-                   autocomplete="current-password">
-        </div>
-
-        <div>
-            <button type="submit">Login</button>
-        </div>
-    </form>
+    render_input([
+        "type" => "password",
+        "name" => "password",
+        "label" => "Password",
+        "attributes" => [
+            "required" => true,
+            "minlength" => 8,
+            "autocomplete" => "current-password",
+        ],
+    ]);
+    render_button(["text" => "Login"]);
+    ?>
+</form>
     <script>
     /**
      * Run this page's chosen checks before submitting its form.
@@ -101,6 +107,8 @@ flash_errors($errors);
         return show_validation_errors(errors);
     }
     </script>
+    </main>
     <?php render_flash_messages(); ?>
+    <?php render_scripts(); ?>
 </body>
 </html>

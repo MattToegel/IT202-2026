@@ -91,46 +91,80 @@ flash_errors($errors);
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
+    <main class="container py-4">
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    <form method="post" action="profile.php" onsubmit="return validate(this);">
-        <input type="hidden" name="action" value="details">
-        <div>
-            <label for="username">Username</label>
-            <input id="username" name="username" required minlength="3" maxlength="30"
-                   pattern="[a-z0-9_\-]{3,30}" value="<?php echo htmlspecialchars($username); ?>">
-        </div>
-        <div>
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" required value="<?php echo htmlspecialchars($email); ?>">
-        </div>
-        <div>
-            <button type="submit">Save details</button>
-        </div>
-    </form>
-    <form method="post" action="profile.php" onsubmit="return validate(this);">
-        <input type="hidden" name="action" value="password">
-        <div>
-            <label for="current_password">Current password</label>
-            <input id="current_password" name="current_password" type="password" required autocomplete="current-password">
-        </div>
-        <div>
-            <label for="new_password">New password</label>
-            <input id="new_password" name="new_password" type="password" required minlength="8" autocomplete="new-password">
-        </div>
-        <div>
-            <label for="confirm_password">Confirm new password</label>
-            <input id="confirm_password" name="confirm_password" type="password" required minlength="8" autocomplete="new-password">
-        </div>
-        <div>
-            <button type="submit">Change password</button>
-        </div>
-    </form>
+    <div class="row g-4">
+    <section class="col-lg-6">
+        <h2>Account Details</h2>
+        <form method="post" action="profile.php" onsubmit="return validate(this)">
+            <?php
+            render_input(["type" => "hidden", "name" => "action", "value" => "details"]);
+            render_input([
+                "name" => "username",
+                "value" => $username,
+                "attributes" => [
+                    "required" => true,
+                    "minlength" => 3,
+                    "maxlength" => 30,
+                    "pattern" => "[a-z0-9_\\-]{3,30}",
+                    "title" => "Must be lowercase alphanumeric and can use underscore or hyphens",
+                    "autocomplete" => "username",
+                ],
+            ]);
+            render_input([
+                "type" => "email",
+                "name" => "email",
+                "value" => $email,
+                "attributes" => ["required" => true, "autocomplete" => "email"],
+            ]);
+            render_button(["text" => "Save details"]);
+            ?>
+        </form>
+    </section>
+
+    <section class="col-lg-6">
+        <h2>Change password</h2>
+        <form method="post" action="profile.php" onsubmit="return validate(this)">
+            <?php
+            render_input(["type" => "hidden", "name" => "action", "value" => "password"]);
+            render_input([
+                "type" => "password",
+                "name" => "current_password",
+                "label" => "Current password",
+                "attributes" => [
+                    "required" => true,
+                    "autocomplete" => "current-password",
+                ],
+            ]);
+            render_input([
+                "type" => "password",
+                "name" => "new_password",
+                "label" => "New password",
+                "attributes" => [
+                    "required" => true,
+                    "minlength" => 8,
+                    "autocomplete" => "new-password",
+                ],
+            ]);
+            render_input([
+                "type" => "password",
+                "name" => "confirm_password",
+                "label" => "Confirm new password",
+                "attributes" => [
+                    "required" => true,
+                    "minlength" => 8,
+                    "autocomplete" => "new-password",
+                ],
+            ]);
+            render_button(["text" => "Change password", "variant" => "warning"]);
+            ?>
+        </form>
+    </section>
+</div>
     <script>
     /**
      * Validate the submitted details or password form with the shared field helpers.
@@ -152,6 +186,8 @@ flash_errors($errors);
         return show_validation_errors(errors);
     }
     </script>
+    </main>
     <?php render_flash_messages(); ?>
+    <?php render_scripts(); ?>
 </body>
 </html>

@@ -106,24 +106,24 @@ flash_errors($errors);
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
-    <main>
+    <main class="container py-4">
         <h1><?php echo htmlspecialchars($page_title); ?></h1>
 
         <section>
             <form method="post" onsubmit="return validate(this);">
                 <h2>Fetch From API</h2>
+                <?php render_input([
+    "name" => "symbol",
+    "id" => "symbol_fetch",
+    "label" => "Symbol",
+    "attributes" => ["required" => true, "pattern" => "[A-Za-z0-9.\\-]{1,10}"],
+]); ?>
                 <div>
-                    <label for="symbol_fetch">Symbol</label>
-                    <input id="symbol_fetch" name="symbol" required pattern="[A-Za-z0-9.\-]{1,10}">
-                </div>
-                <div>
-                    <button name="fetch_stock" value="1" type="submit">Fetch Stock</button>
+                    <?php render_button(["text" => "Fetch Stock", "attributes" => ["name" => "fetch_stock", "value" => "1"]]); ?>
                 </div>
             </form>
         </section>
@@ -131,38 +131,55 @@ flash_errors($errors);
         <section>
             <form method="post" onsubmit="return validate(this);">
                 <h2>Create Manually</h2>
-                <div>
-                    <label for="symbol_create">Symbol</label>
-                    <input id="symbol_create" name="symbol" required pattern="[A-Za-z0-9.\-]{1,10}">
-                </div>
+                <?php render_input([
+    "name" => "symbol",
+    "id" => "symbol_create",
+    "label" => "Symbol",
+    "attributes" => ["required" => true, "pattern" => "[A-Za-z0-9.\\-]{1,10}"],
+]); ?>
+
+                <?php render_input([
+    "name" => "open",
+    "id" => "open",
+    "type" => "number",
+    "label" => "Open",
+    "attributes" => ["min" => "0", "step" => "0.0001", "required" => true],
+]); ?>
+
+                <?php render_input([
+    "name" => "high",
+    "id" => "high",
+    "type" => "number",
+    "label" => "High",
+    "attributes" => ["min" => "0", "step" => "0.0001", "required" => true],
+]); ?>
+
+                <?php render_input([
+    "name" => "low",
+    "id" => "low",
+    "type" => "number",
+    "label" => "Low",
+    "attributes" => ["min" => "0", "step" => "0.0001", "required" => true],
+]); ?>
+
+                <?php render_input([
+    "name" => "price",
+    "id" => "price",
+    "type" => "number",
+    "label" => "Price",
+    "attributes" => ["min" => "0.0001", "step" => "0.0001", "required" => true],
+]); ?>
+
+                <?php render_input([
+    "name" => "latest_trading_day",
+    "id" => "latest_trading_day",
+    "type" => "date",
+    "label" => "Latest trading day",
+    "attributes" => ["required" => true],
+]); ?>
 
                 <div>
-                    <label for="open">Open</label>
-                    <input id="open" name="open" type="number" min="0" step="0.0001" required>
-                </div>
-
-                <div>
-                    <label for="high">High</label>
-                    <input id="high" name="high" type="number" min="0" step="0.0001" required>
-                </div>
-
-                <div>
-                    <label for="low">Low</label>
-                    <input id="low" name="low" type="number" min="0" step="0.0001" required>
-                </div>
-
-                <div>
-                    <label for="price">Price</label>
-                    <input id="price" name="price" type="number" min="0.0001" step="0.0001" required>
-                </div>
-
-                <div>
-                    <label for="latest_trading_day">Latest trading day</label>
-                    <input id="latest_trading_day" name="latest_trading_day" type="date" required>
-                </div>
-
-                <div>
-                    <button name="create_stock" value="1" type="submit">Create Stock</button>
+                    <?php render_button(["text" => "Create Stock", "attributes" => ["name" => "create_stock", "value" => "1"]]); ?>
                 </div>
             </form>
         </section>
@@ -187,5 +204,6 @@ flash_errors($errors);
             return show_validation_errors(errors);
         }
     </script>
+    <?php render_scripts(); ?>
 </body>
 </html>

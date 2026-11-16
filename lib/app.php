@@ -11,4 +11,6 @@ require_once(__DIR__ . "/url_helpers.php");
 require_once(__DIR__ . "/role_helpers.php");
 require_once(__DIR__ . "/api_helper.php");
 require_once(__DIR__ . "/stock_api.php");
+require_once(__DIR__ . "/starcraft_api.php");
+require_once(__DIR__ . "/guide_helpers.php");
 ?>

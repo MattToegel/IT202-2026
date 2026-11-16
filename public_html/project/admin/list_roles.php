@@ -68,44 +68,59 @@ flash_errors($errors);
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
+    <main class="container py-4">
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
-    <form method="get" onsubmit="return validate(this);">
-        <div><label for="q">Search</label>
-        <input id="q" name="q" value="<?php echo htmlspecialchars($search); ?>"></div>
-        <div><button type="submit">Search</button></div>
-    </form>
+    <?php
+// public_html/project/admin/list_roles.php form and display blocks
+?>
+<form method="get" onsubmit="return validate(this);">
+    <?php
+    render_input([
+        "label" => "Search",
+        "name" => "q",
+        "value" => $search,
+    ]);
+    render_button(["text" => "Search"]);
+    ?>
+</form>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($roles as $role): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($role["name"]); ?></td>
-                    <td><?php echo htmlspecialchars($role["description"]); ?></td>
-                    <td><?php echo $role["is_active"] ? "Active" : "Inactive"; ?></td>
-                    <td>
-                        <form method="post" onsubmit="return validate(this);">
-                            <input type="hidden" name="role_id" value="<?php echo (int)$role["id"]; ?>">
-                            <div><button type="submit"><?php echo $role["is_active"] ? "Deactivate" : "Activate"; ?></button></div>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+<?php
+foreach ($roles as &$role) {
+    if ($role["is_active"]) {
+        $role["status"] = "Active";
+    } else {
+        $role["status"] = "Inactive";
+    }
+}
+
+unset($role);
+
+unset($role);
+
+$role_columns = [
+    "name" => "Name",
+    "description" => "Description",
+    "status" => "Status",
+];
+
+$role_actions = [[
+    "label" => "Toggle Status",
+    "url" => "admin/list_roles.php",
+    "method" => "POST",
+    "parameter" => "role_id",
+    "variant" => "warning",
+]];
+
+render_table(
+    $roles,
+    $role_columns,
+    $role_actions
+);
+?>
     <script>
     /**
      * Check the search or status form before the independent PHP handler.
@@ -120,6 +135,8 @@ flash_errors($errors);
         return show_validation_errors(errors);
     }
     </script>
+    </main>
     <?php render_flash_messages(); ?>
+    <?php render_scripts(); ?>
 </body>
 </html>

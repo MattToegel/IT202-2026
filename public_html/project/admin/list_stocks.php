@@ -21,41 +21,24 @@ try {
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stocks</title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
-    <main>
+    <main class="container py-4">
         <h1>Stocks</h1>
-        <table>
-            <thead>
-                <tr><th>Symbol</th><th>Price</th><th>Latest Trading Day</th><th>Source</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-                <?php foreach ($results as $result): ?>
-                    <?php
-                    $source_label = "Manual";
-                    if ($result["is_api"]) {
-                        $source_label = "API";
-                    }
-                    $latest_trading_day = "N/A";
-                    if (isset($result["latest_trading_day"])) {
-                        $latest_trading_day = $result["latest_trading_day"];
-                    }
-                    ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($result["symbol"]); ?></td>
-                        <td><?php echo htmlspecialchars($result["price"]); ?></td>
-                        <td><?php echo htmlspecialchars($latest_trading_day); ?></td>
-                        <td><?php echo $source_label; ?></td>
-                        <td><a href="edit_stock.php?id=<?php echo urlencode($result["id"]); ?>">Edit</a></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <?php
+foreach ($results as &$result) {
+    $result["source"] = $result["is_api"] ? "API" : "Manual";
+    $result["latest_trading_day"] = $result["latest_trading_day"] ?? "N/A";
+}
+unset($result);
+$columns = ["symbol" => "Symbol", "price" => "Price", "latest_trading_day" => "Latest Trading Day", "source" => "Source"];
+$actions = [["label" => "Edit", "url" => "admin/edit_stock.php"]];
+render_table($results, $columns, $actions);
+?>
     </main>
     <?php render_flash_messages(); ?>
+    <?php render_scripts(); ?>
 </body>
 </html>

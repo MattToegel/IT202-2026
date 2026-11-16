@@ -78,32 +78,39 @@ if (!$result) {
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
+    <?php render_head($page_title); ?>
 </head>
 <body>
     <?php render_nav(); ?>
-    <main>
+    <main class="container py-4">
         <h1><?php echo htmlspecialchars($page_title); ?>: <?php echo htmlspecialchars($result["symbol"]); ?></h1>
         <form method="post" onsubmit="return validate(this);">
-            <div>
-                <label for="name">Name</label>
-                <input id="name" name="name" maxlength="120" value="<?php echo htmlspecialchars($result["name"]); ?>" required>
-            </div>
+            <?php render_input([
+    "name" => "name",
+    "id" => "name",
+    "label" => "Name",
+    "value" => $result["name"],
+    "attributes" => ["maxlength" => "120", "required" => true],
+]); ?>
+
+            <?php render_input([
+    "name" => "type",
+    "id" => "type",
+    "label" => "Type",
+    "value" => $result["type"],
+    "attributes" => ["maxlength" => "40"],
+]); ?>
+
+            <?php render_input([
+    "name" => "region",
+    "id" => "region",
+    "label" => "Region",
+    "value" => $result["region"],
+    "attributes" => ["maxlength" => "80"],
+]); ?>
 
             <div>
-                <label for="type">Type</label>
-                <input id="type" name="type" maxlength="40" value="<?php echo htmlspecialchars($result["type"]); ?>">
-            </div>
-
-            <div>
-                <label for="region">Region</label>
-                <input id="region" name="region" maxlength="80" value="<?php echo htmlspecialchars($result["region"]); ?>">
-            </div>
-
-            <div>
-                <button name="save" value="1" type="submit">Save Company</button>
+                <?php render_button(["text" => "Save Company", "attributes" => ["name" => "save", "value" => "1"]]); ?>
             </div>
         </form>
     </main>
@@ -127,5 +134,6 @@ if (!$result) {
             return show_validation_errors(errors);
         }
     </script>
+    <?php render_scripts(); ?>
 </body>
 </html>
