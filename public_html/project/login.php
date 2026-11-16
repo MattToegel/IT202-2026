@@ -18,7 +18,7 @@ if (isset($_POST["email"], $_POST["password"])) {
         if (empty($errors)) {
             $db = getDB();
             $stmt = $db->prepare(
-                "SELECT id, email, password_hash FROM Users WHERE email = :email LIMIT 1"
+                "SELECT id, email, username, password_hash FROM Users WHERE email = :email LIMIT 1"
             );
             $stmt->execute([":email" => $email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -30,6 +30,7 @@ if (isset($_POST["email"], $_POST["password"])) {
                 $_SESSION["user"] = [
                     "user_id" => (int) $user["id"],
                     "email" => $user["email"],
+                    "username" => $user["username"],
                 ];
                 add_flash("Welcome back", "success");
                 header("Location: dashboard.php");

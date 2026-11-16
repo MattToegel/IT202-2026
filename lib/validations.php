@@ -45,4 +45,19 @@ function validate_passwords_match(string $password, string $confirm, array &$err
     }
     return true;
 }
+
+/**
+ * Check the shared username rule for registration and account updates.
+ * @param string $username Already trimmed by the calling page.
+ * @param string[] $errors Page errors; an invalid value appends one message.
+ * @return bool Whether the username has 3-30 lowercase letters, digits, underscores or hyphens.
+ */
+function validate_username(string $username, array &$errors): bool
+{
+    if (!preg_match('/^[a-z0-9_-]{3,30}$/', $username)) {
+        $errors[] = "Username must use 3-30 lowercase letters, numbers, underscores or hyphens.";
+        return false;
+    }
+    return true;
+}
 ?>

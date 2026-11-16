@@ -3,25 +3,29 @@ require_once(__DIR__ . "/../../lib/app.php");
 $page_title = "Register";
 $errors = [];
 $email = "";
-if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
+$username = "";
+if (isset($_POST["email"], $_POST["username"], $_POST["password"], $_POST["confirm_password"])) {
     try {
         $email = trim($_POST["email"]);
+        $username = trim($_POST["username"]);
         $password = $_POST["password"];
         $confirm_password = $_POST["confirm_password"];
 
         validate_email($email, $errors);
+        validate_username($username, $errors);
         validate_password($password, $errors);
         validate_passwords_match($password, $confirm_password, $errors);
         if (empty($errors)) {
             $hash = password_hash($password, PASSWORD_BCRYPT);
             $db = getDB();
             $stmt = $db->prepare(
-                "INSERT INTO Users (email, password_hash)
-     VALUES (:email, :password_hash)"
+                "INSERT INTO Users (email, username, password_hash)
+     VALUES (:email, :username, :password_hash)"
             );
             // Each key names a SQL placeholder; => pairs it with a PHP value.
             $stmt->execute([
                 ":email" => $email,
+                ":username" => $username,
                 ":password_hash" => $hash,
             ]);
             add_flash("Account created", "success");
@@ -32,15 +36,10 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
         // Either invalid types or unsupported values use this response.
         error_log("Registration input failed: " . $e->getMessage());
         $email = ""; // Keep the form safe to redisplay after malformed input.
+        $username = "";
         $errors[] = "Registration failed. Please check the account fields.";
     } catch (PDOException $e) {
-        // MySQL 1062 means a duplicate unique value; this table's email is unique.
-        if (($e->errorInfo[1] ?? null) === 1062) {
-            $errors[] = "That email is already registered.";
-        } else {
-            error_log("Registration query failed: " . $e->getMessage());
-            $errors[] = "Registration failed. Please try again.";
-        }
+        duplicate_user_detail($e, $errors);
     } catch (Exception $e) {
         error_log("Registration failed: " . $e->getMessage());
         $errors[] = "Registration failed. Please try again.";
@@ -64,6 +63,13 @@ flash_errors($errors);
             <input id="email" name="email" type="email"
                    required autocomplete="email"
                    value="<?php echo htmlspecialchars($email); ?>">
+        </div>
+
+        <div>
+            <label for="username">Username</label>
+            <input id="username" name="username" required minlength="3" maxlength="30"
+                   pattern="[a-z0-9_\-]{3,30}" autocomplete="username"
+                   value="<?php echo htmlspecialchars($username); ?>">
         </div>
 
         <div>
@@ -92,6 +98,7 @@ flash_errors($errors);
     function validate(form) {
         const errors = [];
         validate_email(form.email, errors);
+        validate_username(form.username, errors);
         validate_password(form.password, errors);
         validate_passwords_match(form.password, form.confirm_password, errors);
         return show_validation_errors(errors);
