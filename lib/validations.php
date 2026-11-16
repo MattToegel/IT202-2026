@@ -60,4 +60,24 @@ function validate_username(string $username, array &$errors): bool
     }
     return true;
 }
+
+/** Validate checkbox IDs before any bulk relationship is changed.
+ * @param array $values Submitted checkbox values.
+ * @param string[] $errors Collected form errors.
+ * @param bool $allowNegative Permit seeded negative role IDs when true.
+ * @return int[] Unique valid IDs, or an empty array after an invalid value.
+ */
+function validate_ids(array $values, array &$errors, bool $allowNegative = false): array
+{
+    $ids = [];
+    foreach ($values as $value) {
+        $id = filter_var($value, FILTER_VALIDATE_INT);
+        if ($id === false || $id === 0 || (!$allowNegative && $id < 0)) {
+            $errors[] = "Select valid numeric IDs.";
+            return [];
+        }
+        $ids[] = $id;
+    }
+    return array_unique($ids);
+}
 ?>
