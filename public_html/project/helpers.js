@@ -1,12 +1,13 @@
 // File: public_html/project/helpers.js
 /**
- * Check an email field using its HTML constraints.
+ * Check basic email format and HTML constraints, including for a combined text field.
  * @param {HTMLInputElement} emailInput Field to check.
  * @param {string[]} errors Page errors; an invalid field adds one message.
  * @returns {boolean} True when valid, false when an error is added.
  */
 function validate_email(emailInput, errors) {
-    if (!emailInput.value.trim() || !emailInput.validity.valid) {
+    const value = emailInput.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || !emailInput.validity.valid) {
         errors.push("Enter a valid email address.");
         return false;
     }
