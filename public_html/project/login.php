@@ -10,9 +10,13 @@ if (isset($_POST["email"], $_POST["password"])) {
         $email = trim($_POST["email"]);
         $password = $_POST["password"];
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) === 0) {
-            $errors[] = "Invalid email or password.";
-        } else {
+        validate_email($email, $errors);
+        validate_password($password, $errors);
+        if (!empty($errors)) {
+            // Keep credential feedback generic on this page.
+            $errors = ["Invalid email or password."];
+        }
+        if (empty($errors)) {
             $db = getDB();
             $stmt = $db->prepare(
                 "SELECT id, email, password_hash FROM Users WHERE email = :email LIMIT 1"
@@ -50,6 +54,7 @@ if (isset($_POST["email"], $_POST["password"])) {
     <title><?php echo htmlspecialchars($page_title); ?></title>
 </head>
 <body>
+    <?php render_nav(); ?>
     <h1><?php echo htmlspecialchars($page_title); ?></h1>
     <div id="feedback">
         <?php foreach ($errors as $error): ?>
@@ -77,28 +82,16 @@ if (isset($_POST["email"], $_POST["password"])) {
         </div>
     </form>
     <script>
+    /**
+     * Run this page's chosen checks before submitting its form.
+     * @param {HTMLFormElement} form Form being submitted.
+     * @returns {boolean} True to allow submission, false to keep the form open.
+     */
     function validate(form) {
-        const email = form.email.value.trim();
-        const password = form.password.value;
         const errors = [];
-
-        if (!email || !form.email.validity.valid) {
-            errors.push("Enter a valid email address.");
-        }
-
-        if (password.length < 8) {
-            errors.push("Password must be at least 8 characters.");
-        }
-
-        // Reuse the same feedback area that PHP fills after a POST.
-        const feedback = document.getElementById("feedback");
-        feedback.replaceChildren();
-        for (const error of errors) {
-            const message = document.createElement("p");
-            message.textContent = error;
-            feedback.appendChild(message);
-        }
-        return errors.length === 0;
+        validate_email(form.email, errors);
+        validate_password(form.password, errors);
+        return show_validation_errors(errors);
     }
     </script>
 </body>

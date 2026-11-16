@@ -10,15 +10,9 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
         $password = $_POST["password"];
         $confirm_password = $_POST["confirm_password"];
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = "Enter a valid email address.";
-        }
-        if (strlen($password) < 8) {
-            $errors[] = "Password is too short.";
-        }
-        if ($password !== $confirm_password) {
-            $errors[] = "Passwords must match.";
-        }
+        validate_email($email, $errors);
+        validate_password($password, $errors);
+        validate_passwords_match($password, $confirm_password, $errors);
         if (empty($errors)) {
             $hash = password_hash($password, PASSWORD_BCRYPT);
             $db = getDB();
@@ -95,33 +89,17 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm_password"])) {
     </form>
 
     <script>
+    /**
+     * Run this page's chosen checks before submitting its form.
+     * @param {HTMLFormElement} form Form being submitted.
+     * @returns {boolean} True to allow submission, false to keep the form open.
+     */
     function validate(form) {
-        const email = form.email.value.trim();
-        const password = form.password.value;
-        const confirmPassword = form.confirm_password.value;
         const errors = [];
-
-        if (!email || !form.email.validity.valid) {
-            errors.push("Enter a valid email address.");
-        }
-
-        if (password.length < 8) {
-            errors.push("Password must be at least 8 characters.");
-        }
-
-        if (password !== confirmPassword) {
-            errors.push("Passwords must match.");
-        }
-
-        // Reuse the same feedback area that PHP fills after a POST.
-        const feedback = document.getElementById("feedback");
-        feedback.replaceChildren();
-        for (const error of errors) {
-            const message = document.createElement("p");
-            message.textContent = error;
-            feedback.appendChild(message);
-        }
-        return errors.length === 0;
+        validate_email(form.email, errors);
+        validate_password(form.password, errors);
+        validate_passwords_match(form.password, form.confirm_password, errors);
+        return show_validation_errors(errors);
     }
     </script>
 </body>
