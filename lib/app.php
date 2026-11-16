@@ -8,4 +8,5 @@ require_once(__DIR__ . "/user_helpers.php");
 require_once(__DIR__ . "/flash_messages.php");
 require_once(__DIR__ . "/url_helpers.php");
 require_once(__DIR__ . "/role_helpers.php");
+require_once(__DIR__ . "/api_helper.php");
 ?>

@@ -1,0 +1,18 @@
+{
+  "bestMatches": [
+    {
+      "1. symbol": "MSFT",
+      "2. name": "Microsoft Corporation",
+      "3. type": "Equity",
+      "4. region": "United States",
+      "8. currency": "USD"
+    },
+    {
+      "1. symbol": "MSFT34.SAO",
+      "2. name": "Microsoft Corporation",
+      "3. type": "Equity",
+      "4. region": "Brazil/Sao Paolo",
+      "8. currency": "BRL"
+    }
+  ]
+}
