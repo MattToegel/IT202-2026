@@ -13,7 +13,8 @@ if (isset($_POST["email"], $_POST["password"])) {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) === 0) {
             $errors[] = "Invalid email or password.";
         } else {
-            $stmt = getDB()->prepare(
+            $db = getDB();
+            $stmt = $db->prepare(
                 "SELECT id, email, password_hash FROM Users WHERE email = :email LIMIT 1"
             );
             $stmt->execute([":email" => $email]);
