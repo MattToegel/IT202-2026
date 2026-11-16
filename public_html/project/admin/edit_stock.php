@@ -46,17 +46,11 @@ if (isset($_POST["save"])) {
         ];
 
         try {
-            $db = getDB();
-            $stmt = $db->prepare(
-                "UPDATE Stocks
-                 SET open = :open, high = :high, price = :price
-                 WHERE id = :id"
-            );
-            $stmt->execute($params);
+            update("Stocks", $params, ["id"]);
             add_flash("Stock updated", "success");
             header("Location: " . project_url("admin/list_stocks.php"));
             exit;
-        } catch (PDOException $e) {
+        } catch (Throwable $e) {
             error_log("Update stock failed: " . $e->getMessage());
             $errors[] = "Unable to update stock.";
         }
@@ -66,11 +60,11 @@ if (isset($_POST["save"])) {
 flash_errors($errors);
 
 try {
-    $db = getDB();
-    $stmt = $db->prepare("SELECT open, high, price, symbol FROM Stocks WHERE id = :id LIMIT 1");
-    $stmt->execute([":id" => $id]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
+    $result = select(
+        "SELECT open, high, price, symbol FROM Stocks WHERE id = :id LIMIT 1",
+        [":id" => $id]
+    );
+} catch (Throwable $e) {
     error_log("Load stock for edit failed: " . $e->getMessage());
     add_flash("Unable to load that stock.", "danger");
     header("Location: " . project_url("admin/list_stocks.php"));

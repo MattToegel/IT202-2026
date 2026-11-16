@@ -60,15 +60,9 @@ if ($rows && empty($errors)) {
     $duplicates = 0;
 
     try {
-        $db = getDB();
-        $stmt = $db->prepare(
-            "INSERT INTO Companies (symbol, name, type, region, currency, is_api)
-             VALUES (:symbol, :name, :type, :region, :currency, :is_api)"
-        );
-
         foreach ($rows as $row) {
             try {
-                $stmt->execute($row);
+                insert("Companies", $row);
                 $saved++;
             } catch (PDOException $e) {
                 if ((int)($e->errorInfo[1] ?? 0) === 1062) {
@@ -87,7 +81,7 @@ if ($rows && empty($errors)) {
         }
         header("Location: " . project_url("admin/list_companies.php"));
         exit;
-    } catch (PDOException $e) {
+    } catch (Throwable $e) {
         error_log("Create companies failed: " . $e->getMessage());
         add_flash("Unable to save the company records.", "danger");
     }

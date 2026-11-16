@@ -7,16 +7,13 @@ $page_title = "List Companies";
 $results = [];
 
 try {
-    $db = getDB();
-    $stmt = $db->prepare(
+    $results = selectAll(
         "SELECT id, symbol, name, type, region, is_api
          FROM Companies
          ORDER BY modified DESC
          LIMIT 10"
     );
-    $stmt->execute();
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
+} catch (Throwable $e) {
     error_log("List companies failed: " . $e->getMessage());
     add_flash("Unable to load companies.", "danger");
 }

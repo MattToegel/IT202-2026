@@ -82,16 +82,11 @@ if ($row && empty($errors)) {
     ];
 
     try {
-        $db = getDB();
-        $stmt = $db->prepare(
-            "INSERT INTO Stocks (symbol, open, high, low, price, latest_trading_day, is_api)
-             VALUES (:symbol, :open, :high, :low, :price, :latest_trading_day, :is_api)"
-        );
-        $stmt->execute($params);
+        insert("Stocks", $params);
         add_flash("Created stock " . $row["symbol"], "success");
         header("Location: " . project_url("admin/list_stocks.php"));
         exit;
-    } catch (PDOException $e) {
+    } catch (Throwable $e) {
         error_log("Create stock failed: " . $e->getMessage());
         $error_code = 0;
         if (isset($e->errorInfo[1])) {

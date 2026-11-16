@@ -45,17 +45,11 @@ if (isset($_POST["save"])) {
         ];
 
         try {
-            $db = getDB();
-            $stmt = $db->prepare(
-                "UPDATE Companies
-                 SET name = :name, type = :type, region = :region
-                 WHERE id = :id"
-            );
-            $stmt->execute($params);
+            update("Companies", $params, ["id"]);
             add_flash("Company updated", "success");
             header("Location: " . project_url("admin/list_companies.php"));
             exit;
-        } catch (PDOException $e) {
+        } catch (Throwable $e) {
             error_log("Update company failed: " . $e->getMessage());
             $errors[] = "Unable to update company.";
         }
@@ -65,11 +59,11 @@ if (isset($_POST["save"])) {
 flash_errors($errors);
 
 try {
-    $db = getDB();
-    $stmt = $db->prepare("SELECT `name`, `region`, `type`, `symbol` FROM Companies WHERE id = :id LIMIT 1");
-    $stmt->execute([":id" => $id]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
+    $result = select(
+        "SELECT `name`, `region`, `type`, `symbol` FROM Companies WHERE id = :id LIMIT 1",
+        [":id" => $id]
+    );
+} catch (Throwable $e) {
     error_log("Load company for edit failed: " . $e->getMessage());
     add_flash("Unable to load that company.", "danger");
     header("Location: " . project_url("admin/list_companies.php"));

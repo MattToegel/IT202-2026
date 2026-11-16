@@ -7,16 +7,13 @@ $page_title = "List Stocks";
 $results = [];
 
 try {
-    $db = getDB();
-    $stmt = $db->prepare(
+    $results = selectAll(
         "SELECT id, symbol, price, latest_trading_day, is_api
          FROM Stocks
          ORDER BY modified DESC
          LIMIT 10"
     );
-    $stmt->execute();
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
+} catch (Throwable $e) {
     error_log("List stocks failed: " . $e->getMessage());
     add_flash("Unable to load stocks.", "danger");
 }
