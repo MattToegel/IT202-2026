@@ -20,8 +20,8 @@ $page_title = "Welcome to My Project";
         <!-- TODO: replace your_ucid with your UCID. -->
         <p>UCID: your_ucid</p>
         <p>
-            <a class="btn btn-primary" href="register.php">Register</a>
-            <a class="btn btn-secondary" href="login.php">Login</a>
+            <a class="btn btn-primary" href="<?php echo project_url("register.php"); ?>">Register</a>
+            <a class="btn btn-secondary" href="<?php echo project_url("login.php"); ?>">Login</a>
         </p>
     </div>
     <?php render_flash_messages(); ?>
